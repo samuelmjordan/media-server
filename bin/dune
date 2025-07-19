@@ -1,4 +1,5 @@
 (executable
  (public_name nautilus)
  (name main)
- (libraries nautilus dream))
+ (libraries nautilus dream yojson lwt)
+ (preprocess (pps lwt_ppx)))

@@ -1,4 +1,4 @@
-# dune fmt
+# dune exec nautilus
 # OCAMLPARAM: unset
 # Shared cache: enabled-except-user-rules
 # Shared cache location: /home/samuel/.cache/dune/db
@@ -13,25 +13,4 @@
 #  ; build_dir = In_build_dir "default"
 #  ; instrument_with = []
 #  }
-$ /home/samuel/.opam/stable/bin/ocamlc.opt -config > /tmp/dune_780efc_output
-$ (cd _build/default && /home/samuel/.opam/stable/bin/ocamlformat --impl bin/main.ml) > _build/default/bin/.formatted/main.ml
-$ /usr/bin/git --no-pager diff --no-index --color=always -u _build/default/bin/main.ml _build/default/bin/.formatted/main.ml
-> diff --git a/_build/default/bin/main.ml b/_build/default/bin/.formatted/main.ml
-> index eb27c61..186f093 100644
-> --- a/_build/default/bin/main.ml
-> +++ b/_build/default/bin/.formatted/main.ml
-> @@ -9,8 +9,8 @@ let count_requests inner_handler request =
->  let () =
->    Dream.run @@ Dream.logger @@ count_requests
->    @@ Dream.router
-> -  [
-> -    Dream.get "/" (fun _ -> Dream.html "Good morning, world!");
-> -    Dream.get "/echo/:word" (fun request -> Dream.html (Dream.param request "word"));
-> -    Dream.get "/count" (fun _ -> Dream.html (Printf.sprintf "Saw %i request(s)!" !count));
-> -  ]
-> +       [
-> +         Dream.get "/" (fun _ -> Dream.html "Good morning, world!");
-> +         Dream.get "/echo/:word" (fun request -> Dream.html (Dream.param request "word"));
-> +         Dream.get "/count" (fun _ -> Dream.html (Printf.sprintf "Saw %i request(s)!" !count));
-> +       ]
-[1]
+$ /home/samuel/.opam/stable/bin/ocamlc.opt -config > /tmp/dune_d868ab_output

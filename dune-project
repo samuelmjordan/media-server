@@ -13,7 +13,7 @@
 
 (package
  (name nautilus)
- (depends ocaml dune dream yojson lwt))
+ (depends ocaml dune dream yojson lwt ppx_lwt))
 
 (formatting
  (enabled_for ocaml))
