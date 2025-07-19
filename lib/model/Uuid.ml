@@ -5,6 +5,7 @@ end
 module MakeUuid(Config : UuidConfig) = struct
   type uuid = string
 
+  let uuid_length = 36
   let prefix = Config.prefix
 
   let make () = 
@@ -16,7 +17,9 @@ module MakeUuid(Config : UuidConfig) = struct
     else
       let prefix_length = String.length Config.prefix in
       let uuid_part = String.sub s prefix_length (String.length s - prefix_length) in
-      match Uuidm.of_string uuid_part with
+      if String.length uuid_part <> uuid_length then
+        Error (Printf.sprintf "uuid part must be %d chars, got %d in: %s" uuid_length (String.length uuid_part) s)
+      else match Uuidm.of_string uuid_part with
       | Some _ -> Ok s
       | None -> Error (Printf.sprintf "invalid uuid format in: %s" s)
 
