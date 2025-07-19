@@ -3,5 +3,5 @@
 (library
  (public_name nautilus)
  (name nautilus)
- (libraries dream yojson lwt)
+ (libraries dream yojson lwt uuidm)
  (preprocess (pps lwt_ppx)))
