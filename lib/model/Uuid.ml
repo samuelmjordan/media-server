@@ -3,7 +3,7 @@ module type UuidConfig = sig
 end
 
 module MakeUuid(Config : UuidConfig) = struct
-  type t = string
+  type uuid = string
 
   let prefix = Config.prefix
 
