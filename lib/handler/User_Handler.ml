@@ -3,7 +3,7 @@ open User
 
 let user_to_json user =
   `Assoc [
-    ("user_id", `String (User.UserUuid.to_string user.user_id));
+    ("user_id", `String (User.User_Uuid.to_string user.user_id));
     ("name", `String user.name);
     ("email", `String user.email);
   ]
@@ -13,7 +13,7 @@ let json_to_user json =
   let user_id_str = json |> member "user_id" |> to_string in
   let name = json |> member "name" |> to_string in
   let email = json |> member "email" |> to_string in
-  match User.UserUuid.from_string user_id_str with
+  match User.User_Uuid.from_string user_id_str with
   | Ok user_id -> Ok { user_id; name; email }
   | Error msg -> Error ("invalid user_id: " ^ msg)
 
@@ -33,7 +33,7 @@ let get_all_users _req =
     let rec convert_users acc = function
       | [] -> Ok (List.rev acc)
       | (user_id, name, email) :: rest ->
-        match User.UserUuid.from_string user_id with
+        match User.User_Uuid.from_string user_id with
         | Ok user_id -> convert_users ({ user_id; name; email } :: acc) rest
         | Error _ -> Error "invalid user_id in db"
     in
@@ -49,7 +49,7 @@ let get_all_users _req =
   
 let get_user_by_id req =
   let user_id_str = Dream.param req "user_id" in
-  match User.UserUuid.from_string user_id_str with
+  match User.User_Uuid.from_string user_id_str with
   | Error _ -> Dream.respond ~status:`Bad_Request "invalid user id format"
   | Ok user_id ->
     let* result = 
@@ -69,7 +69,7 @@ let create_user req =
   | json ->
     (match json_to_user_create json with
       | (name, email) ->
-        let user_id = User.UserUuid.make () in
+        let user_id = User.User_Uuid.make () in
         let* result = 
           Caqti_lwt_unix.with_connection (Uri.of_string Db.db_url) (fun db ->
             Db.create_user ~user_id ~name ~email db

@@ -1,8 +1,8 @@
-module type UuidConfig = sig
+module type Uuid_Config = sig
   val prefix : string
 end
 
-module MakeUuid(Config : UuidConfig) = struct
+module Make_Uuid(Config : Uuid_Config) = struct
   type uuid = string
 
   let uuid_length = 36

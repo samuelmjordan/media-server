@@ -6,9 +6,9 @@ let miscRoutes = [
 ]
 
 let userRoutes = [
-  Dream.get "/user" UserHandler.get_all_users;
-  Dream.get "/user/:user_id" UserHandler.get_user_by_id;
-  Dream.post "/user" UserHandler.create_user;
+  Dream.get "/user" User_Handler.get_all_users;
+  Dream.get "/user/:user_id" User_Handler.get_user_by_id;
+  Dream.post "/user" User_Handler.create_user;
 ]
 
 let fileRoutes = [

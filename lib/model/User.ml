@@ -1,7 +1,7 @@
-module UserUuid = Uuid.MakeUuid(struct let prefix = "user_" end)
+module User_Uuid = Uuid.Make_Uuid(struct let prefix = "user_" end)
 
 type user = {
-  user_id: UserUuid.uuid;
+  user_id: User_Uuid.uuid;
   name: string;
   email: string;
 }

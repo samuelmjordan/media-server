@@ -4,9 +4,9 @@ module Q = struct
   open Caqti_request.Infix
   
   let user_uuid_type =
-    let encode uuid = Ok (User.UserUuid.to_string uuid) in
+    let encode uuid = Ok (User.User_Uuid.to_string uuid) in
     let decode str = 
-      match User.UserUuid.from_string str with
+      match User.User_Uuid.from_string str with
       | Ok uuid -> Ok uuid
       | Error msg -> Error ("invalid uuid: " ^ msg)
     in

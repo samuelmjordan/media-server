@@ -1,7 +1,7 @@
-module MediaUuid = Uuid.MakeUuid(struct let prefix = "media_" end)
+module Media_Uuid = Uuid.Make_Uuid(struct let prefix = "media_" end)
 
 type media = {
-  mediaId: MediaUuid.uuid;
+  mediaId: Media_Uuid.uuid;
   filename: string;
   mime_type: string;
   size_bytes: int;
