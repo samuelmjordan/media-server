@@ -3,5 +3,5 @@
 (library
  (public_name nautilus)
  (name nautilus)
- (libraries dream yojson lwt uuidm)
+ (libraries dream yojson lwt uuidm caqti caqti-lwt caqti-driver-postgresql)
  (preprocess (pps lwt_ppx)))

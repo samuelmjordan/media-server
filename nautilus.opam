@@ -11,6 +11,9 @@ depends: [
   "yojson"
   "lwt"
   "ppx_lwt"
+  "caqti"
+  "caqti-lwt"
+  "caqti-driver-postgresql"
   "odoc" {with-doc}
 ]
 build: [
