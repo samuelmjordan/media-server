@@ -14,3 +14,6 @@
 (package
  (name nautilus)
  (depends ocaml dune dream yojson lwt))
+
+(formatting
+ (enabled_for ocaml))
