@@ -1,2 +1,4 @@
 (library
- (name nautilus))
+ (public_name nautilus)
+ (name nautilus)
+ (libraries dream yojson lwt))

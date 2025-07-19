@@ -5,22 +5,12 @@
 (generate_opam_files true)
 
 (source
- (github username/reponame))
+ (github jordan12sam/nautilus))
 
-(authors "Author Name <author@example.com>")
+(authors "Sam Jordan <samuelmjordandev@gmail.com>")
 
-(maintainers "Maintainer Name <maintainer@example.com>")
-
-(license LICENSE)
-
-(documentation https://url/to/documentation)
+(maintainers "Sam Jordan <samuelmjordandev@gmail.com>")
 
 (package
  (name nautilus)
- (synopsis "A short synopsis")
- (description "A longer description")
- (depends ocaml)
- (tags
-  ("add topics" "to describe" your project)))
-
-; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
+ (depends ocaml dune dream yojson lwt))

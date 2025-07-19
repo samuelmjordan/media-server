@@ -1,6 +1,16 @@
-# dune init project nautilus
+# dune exec nautilus
 # OCAMLPARAM: unset
 # Shared cache: enabled-except-user-rules
 # Shared cache location: /home/samuel/.cache/dune/db
 # Workspace root: /home/samuel/Documents/dev/nautilus
 # Auto-detected concurrency: 12
+# Dune context:
+#  { name = "default"
+#  ; kind = "default"
+#  ; profile = Dev
+#  ; merlin = true
+#  ; fdo_target_exe = None
+#  ; build_dir = In_build_dir "default"
+#  ; instrument_with = []
+#  }
+$ /home/samuel/.opam/stable/bin/ocamlc.opt -config > /tmp/dune_bdbf25_output
