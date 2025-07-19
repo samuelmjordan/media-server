@@ -1,0 +1,6 @@
+# dune init project nautilus
+# OCAMLPARAM: unset
+# Shared cache: enabled-except-user-rules
+# Shared cache location: /home/samuel/.cache/dune/db
+# Workspace root: /home/samuel/Documents/dev/nautilus
+# Auto-detected concurrency: 12
