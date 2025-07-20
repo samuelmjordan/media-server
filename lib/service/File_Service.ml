@@ -13,10 +13,8 @@ let read_dir path =
         let file = File.make ~path ~name:entry ~is_directory ~size_bytes in
         loop (file :: acc)
     with 
-    | End_of_file ->
+      | End_of_file ->
         let* () = Lwt_unix.closedir handle in
         Lwt.return (List.rev acc)
-    | _ ->
-        loop acc
-  in
-  loop []
+      | _ -> loop acc
+    in loop []
