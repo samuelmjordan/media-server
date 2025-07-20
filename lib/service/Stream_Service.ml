@@ -8,18 +8,33 @@ let read_file file_path =
   let* content = Lwt_io.read ic in
   let* () = Lwt_io.close ic in
   Lwt.return content
-
 let parse_range_header header file_size =
+  let parse_single_range range_str =
+    match String.split_on_char '-' (String.trim range_str) with
+    | [start_str; ""] -> 
+      (match int_of_string_opt start_str with
+       | Some start when start >= 0 && start < file_size -> Some (start, None)
+       | _ -> None)
+    | [""; suffix_str] -> 
+      (match int_of_string_opt suffix_str with
+       | Some suffix when suffix > 0 -> 
+         let start = max 0 (file_size - suffix) in
+         Some (start, None)
+       | _ -> None)
+    | [start_str; end_str] -> 
+      (match int_of_string_opt start_str, int_of_string_opt end_str with
+       | Some start, Some end_pos when start >= 0 && end_pos >= start && start < file_size ->
+         Some (start, Some (min end_pos (file_size - 1)))
+       | _ -> None)
+    | _ -> None
+  in
+  
   match String.split_on_char '=' header with
-  | ["bytes"; ranges] ->
-    let parsed_ranges = String.split_on_char ',' ranges
-    |> List.map (fun range ->
-      match String.split_on_char '-' (String.trim range) with
-      | [start; ""] -> (int_of_string start, None) (* 1000- *)
-      | [""; suffix] -> (max 0 (file_size - int_of_string suffix), None) (* -500 = last 500 bytes *)
-      | [start; end_] -> (int_of_string start, Some (int_of_string end_)) (* 1000-2000 *)
-      | _ -> failwith "bad range") in
+  | ["bytes"; ranges_str] ->
+    let range_strs = String.split_on_char ',' ranges_str in
+    let parsed_ranges = List.filter_map parse_single_range range_strs in
     (match parsed_ranges with
+     | [] -> None (* all ranges were invalid *)
      | [(start, end_opt)] -> Some (Single (start, end_opt))
      | multiple -> Some (Multi multiple))
   | _ -> None
