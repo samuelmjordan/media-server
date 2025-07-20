@@ -17,7 +17,7 @@ let get_user_by_id req =
  | Ok user_id ->
    let* result = User_Repository.find_by_id ~user_id in
    match result with
-    | Error _ -> Dream.respond ~status:`Internal_Server_Error "db error"
+    | Error _ -> Dream.respond ~status:`Internal_Server_Error "internal server error"
     | Ok None -> Dream.respond ~status:`Not_Found "user not found"
     | Ok (Some user) ->
       Dream.json (Yojson.Safe.to_string (User.user_to_json user))
@@ -33,7 +33,7 @@ let create_user req =
         let user_id = User.User_Uuid.make () in
         let* result = User_Repository.create ~user_id ~name ~email in
         (match result with
-          | Error _ -> Dream.respond ~status:`Internal_Server_Error "db error"
+          | Error _ -> Dream.respond ~status:`Internal_Server_Error "internal server error"
           | Ok () -> 
             let user = { user_id; name; email } in
             Dream.json (Yojson.Safe.to_string (User.user_to_json user))))

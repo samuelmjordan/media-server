@@ -21,4 +21,4 @@ let find_all () =
     let users = List.map (fun (user_id, name, email) -> 
       { User.user_id; name; email }) rows in
     Lwt.return (Ok users)
-  | Error _ -> Lwt.return (Error "db error")
+  | Error e -> Lwt.return (Error e)
