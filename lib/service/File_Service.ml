@@ -7,14 +7,10 @@ let read_dir path =
       if entry = "." || entry = ".." then
         loop acc
       else
-        let full_path = Filename.concat path entry in
-        let* stats = Lwt_unix.stat full_path in
-        let file = {
-          File.file_id = File.File_Uuid.make ();
-          path = full_path;
-          is_directory = stats.st_kind = S_DIR;
-          size_bytes = stats.st_size;
-        } in
+        let* stats = Lwt_unix.stat (Filename.concat path entry) in
+        let is_directory = stats.st_kind = S_DIR in
+        let size_bytes = stats.st_size in
+        let file = File.make ~path ~name:entry ~is_directory ~size_bytes in
         loop (file :: acc)
     with 
     | End_of_file ->
