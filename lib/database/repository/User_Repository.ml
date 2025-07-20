@@ -24,13 +24,13 @@ let find_all () =
   let* result = Db.with_connection (fun (module Db : Caqti_lwt.CONNECTION) ->
     Db.collect_list User_Statements.Q.get_all_users ()) in
  match result with
- | Ok rows ->
-   let rec convert_users acc = function
-     | [] -> Ok (List.rev acc)
-     | row :: rest ->
-       (match convert_row_to_user row with
-       | Ok user -> convert_users (user :: acc) rest
-       | Error e -> Error e)
-   in
-   Lwt.return (convert_users [] rows)
- | Error _ -> Lwt.return (Error "db error")
+  | Ok rows ->
+    let rec convert_users acc = function
+      | [] -> Ok (List.rev acc)
+      | row :: rest ->
+        (match convert_row_to_user row with
+        | Ok user -> convert_users (user :: acc) rest
+        | Error e -> Error e)
+    in
+    Lwt.return (convert_users [] rows)
+  | Error _ -> Lwt.return (Error "db error")
