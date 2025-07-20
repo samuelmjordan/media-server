@@ -4,8 +4,7 @@ open User
 let get_all_users _req =
   let* result = User_Repository.find_all () in
   match result with
-  | Error _ ->
-    Dream.respond ~status:`Internal_Server_Error "failed to fetch users"
+  | Error _ -> Dream.respond ~status:`Internal_Server_Error "failed to fetch users"
   | Ok users ->
     let json = `List (List.map User.user_to_json users) in
     Dream.json (Yojson.Safe.to_string json)
@@ -19,8 +18,7 @@ let get_user_by_id req =
    match result with
     | Error _ -> Dream.respond ~status:`Internal_Server_Error "internal server error"
     | Ok None -> Dream.respond ~status:`Not_Found "user not found"
-    | Ok (Some user) ->
-      Dream.json (Yojson.Safe.to_string (User.user_to_json user))
+    | Ok (Some user) -> Dream.json (Yojson.Safe.to_string (User.user_to_json user))
 
 let create_user req =
   let* body = Dream.body req in
