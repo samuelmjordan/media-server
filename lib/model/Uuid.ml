@@ -24,4 +24,13 @@ module Make_Uuid(Config : Uuid_Config) = struct
       | None -> Error (Printf.sprintf "invalid uuid format in: %s" s)
 
   let to_string t = t
+
+  let caqti_type =
+  let encode uuid = Ok (to_string uuid) in
+  let decode str = 
+    match from_string str with
+    | Ok uuid -> Ok uuid
+    | Error msg -> Error ("invalid " ^ Config.prefix ^ "uuid: " ^ msg)
+  in
+  Caqti_type.custom ~encode ~decode Caqti_type.string
 end

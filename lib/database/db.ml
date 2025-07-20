@@ -3,15 +3,6 @@ let db_url = "postgresql://default:password@localhost:3306/mydatabase"
 module Q = struct
   open Caqti_request.Infix
   
-  let user_uuid_type =
-    let encode uuid = Ok (User.User_Uuid.to_string uuid) in
-    let decode str = 
-      match User.User_Uuid.from_string str with
-      | Ok uuid -> Ok uuid
-      | Error msg -> Error ("invalid uuid: " ^ msg)
-    in
-    Caqti_type.custom ~encode ~decode Caqti_type.string
-  
   let create_user =
     Caqti_type.(t3 user_uuid_type string string) ->. Caqti_type.unit
     @@
