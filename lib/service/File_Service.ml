@@ -1,42 +1,5 @@
 open Lwt.Syntax
 
-let split_n n lst =
-  let rec aux acc i = function
-    | [] -> (List.rev acc, [])
-    | x :: xs when i > 0 -> aux (x :: acc) (i - 1) xs
-    | rest -> (List.rev acc, rest)
-  in
-  aux [] n lst
-
-(* semaphore to limit concurrent operations *)
-module Semaphore = struct
-  type t = {
-    mutable count: int;
-    mutable waiters: unit Lwt.u list;
-  }
-  
-  let create n = { count = n; waiters = [] }
-  
-  let acquire sem =
-    if sem.count > 0 then (
-      sem.count <- sem.count - 1;
-      Lwt.return_unit
-    ) else (
-      let waiter, wakener = Lwt.wait () in
-      sem.waiters <- wakener :: sem.waiters;
-      waiter
-    )
-  
-  let release sem =
-    sem.count <- sem.count + 1;
-    match sem.waiters with
-    | [] -> ()
-    | wakener :: rest ->
-        sem.waiters <- rest;
-        sem.count <- sem.count - 1;
-        Lwt.wakeup wakener ()
-end
-
 let read_dir ?(max_concurrent=200) path =
   let sem = Semaphore.create max_concurrent in
   
