@@ -14,6 +14,7 @@ let userRoutes = [
 let fileRoutes = [
   Dream.get "/directory" File_Handler.get_directory;
   Dream.post "/directory/scan" File_Handler.scan_directory;
+  Dream.get "/file/:file_id" File_Handler.get_file;
 ]
 
 let routes = miscRoutes 

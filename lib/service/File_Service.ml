@@ -57,4 +57,6 @@ let scan_directory path =
         | Error e -> Lwt.return (Error e)
   in
   insert_all files
-  
+
+let get_file file_id =
+  File_Repository.find file_id
