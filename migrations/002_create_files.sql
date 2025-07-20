@@ -6,8 +6,8 @@ CREATE TABLE file_ (
    -- Data
    path TEXT NOT NULL,
    name TEXT NOT NULL,
+   mime_type TEXT NOT NULL,
    is_directory BOOLEAN NOT NULL,
-   is_video BOOLEAN NOT NULL,
    size_bytes BIGINT NOT NULL,
 
    -- Audit fields
