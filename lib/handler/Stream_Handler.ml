@@ -14,7 +14,8 @@ let stream_media request =
           | None ->
             let full_path = Filename.concat file.path file.name in
             let* content = Stream_Service.read_file full_path in
-            Dream.respond ~headers:[("Content-Type", file.mime_type)] content
+            let filename_header = ("Content-Disposition", Printf.sprintf "inline; filename=\"%s\"" file.name) in
+            Dream.respond ~headers:(filename_header :: [("Content-Type", file.mime_type)]) content
           | Some range_header ->
             let ranges_result = Stream_Service.parse_range_header range_header file.size_bytes in
             match ranges_result with
@@ -27,4 +28,7 @@ let stream_media request =
                     let* content_result = Stream_Service.make_range_response ~file_path:file.path ~file_name:file.name ~range ~file_size:file.size_bytes in
                     match content_result with
                     | Error err -> Dream.respond ~status:`Internal_Server_Error err
-                    | Ok content -> Dream.respond ~status:`Partial_Content ~headers content
+                    | Ok content -> 
+                      let filename_header = ("Content-Disposition", Printf.sprintf "inline; filename=\"%s\"" file.name) in
+                      let all_headers = ("Content-Type", file.mime_type) :: filename_header :: headers in
+                      Dream.respond ~status:`Partial_Content ~headers:all_headers content
