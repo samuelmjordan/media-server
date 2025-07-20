@@ -15,6 +15,11 @@ let fileRoutes = [
   Dream.get "/directory" File_Handler.get_directory;
 ]
 
+let streamRoutes = [
+  Dream.get "/stream/:id" Stream_Handler.stream_media;
+]
+
 let routes = miscRoutes 
   @ userRoutes 
   @ fileRoutes
+  @ streamRoutes
