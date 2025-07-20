@@ -13,13 +13,9 @@ let userRoutes = [
 
 let fileRoutes = [
   Dream.get "/directory" File_Handler.get_directory;
-]
-
-let streamRoutes = [
-  Dream.get "/stream/:id" Stream_Handler.stream_media;
+  Dream.post "/directory/scan" File_Handler.scan_directory;
 ]
 
 let routes = miscRoutes 
   @ userRoutes 
   @ fileRoutes
-  @ streamRoutes

@@ -1,6 +1,6 @@
 open Lwt.Syntax
 
-let read_dir ?(max_concurrent=200) path =
+let read_directory ?(max_concurrent=200) path =
   let sem = Semaphore.create max_concurrent in
   
   let rec process_path path =
@@ -44,5 +44,17 @@ let read_dir ?(max_concurrent=200) path =
         Lwt.fail exn
       )
   in
-  
   process_path path
+
+let scan_directory path =
+  let* files = read_directory path in
+  let rec insert_all = function
+    | [] -> Lwt.return (Ok files)
+    | file :: rest ->
+        let* result = File_Repository.insert file in
+        match result with
+        | Ok () -> insert_all rest
+        | Error e -> Lwt.return (Error e)
+  in
+  insert_all files
+  
