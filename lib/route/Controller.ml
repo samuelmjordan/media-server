@@ -12,7 +12,7 @@ let userRoutes = [
 ]
 
 let fileRoutes = [
-  Dream.get "/directory/:directory" File_Handler.get_directory;
+  Dream.get "/directory" File_Handler.get_directory;
 ]
 
 let routes = miscRoutes 
