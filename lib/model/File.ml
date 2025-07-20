@@ -20,11 +20,16 @@ let file_to_json file =
   ]
 
 let make ~path ~name ~is_directory ~size_bytes =
-  {
-    file_id = File_Uuid.make ();
-    path = path;
-    name = name;
-    mime_type = "";
-    is_directory = is_directory;
-    size_bytes = size_bytes;
-  }
+  let mime_type = 
+    if is_directory then "inode/directory"
+    else match String.rindex_opt name '.' with
+      | None -> Mime_types.map_file name
+      | Some i -> Mime_types.map_extension (String.sub name (i + 1) (String.length name - i - 1)) in
+        {
+          file_id = File_Uuid.make ();
+          path = path;
+          name = name;
+          mime_type = mime_type;
+          is_directory = is_directory;
+          size_bytes = size_bytes;
+        }
