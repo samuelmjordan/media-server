@@ -8,5 +8,5 @@
 
 (rule
  (alias runtest)
- (deps ./runner.exe config.toml)
+ (deps ./runner.exe config.toml (source_tree data))
  (action (run ./runner.exe)))
