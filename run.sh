@@ -3,7 +3,7 @@ set -e
 
 dune build
 docker compose up -d
-sleep 1
+sleep 2
 
 # use the postgres container to run psql
 PSQL="docker exec -i $(docker compose ps -q postgres) psql -U default -d mydatabase"

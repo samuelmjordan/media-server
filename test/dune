@@ -3,7 +3,7 @@
 (executable
  (public_name test_runner)
  (name runner)
- (libraries ounit2 nautilus dream yojson lwt uuidm caqti caqti-lwt caqti-driver-postgresql)
+ (libraries nautilus alcotest alcotest-lwt dream yojson lwt uuidm caqti caqti-lwt caqti-driver-postgresql)
  (preprocess (pps lwt_ppx)))
 
 (rule

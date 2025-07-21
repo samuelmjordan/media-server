@@ -7,6 +7,8 @@ bug-reports: "https://github.com/jordan12sam/nautilus/issues"
 depends: [
   "ocaml"
   "dune" {>= "3.19"}
+  "alcotest"
+  "alcotest-lwt"
   "dream"
   "yojson"
   "lwt"

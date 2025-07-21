@@ -13,7 +13,7 @@
 
 (package
  (name nautilus)
- (depends ocaml dune dream yojson lwt ppx_lwt caqti caqti-lwt caqti-driver-postgresql))
+ (depends ocaml dune alcotest alcotest-lwt dream yojson lwt ppx_lwt caqti caqti-lwt caqti-driver-postgresql))
 
 (formatting
  (enabled_for ocaml))
