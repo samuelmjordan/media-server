@@ -4,7 +4,7 @@ end
 
 let default_config = 
   let module Config = struct
-    let connection_uri = Uri.of_string "postgresql://default:password@localhost:3306/mydatabase"
+    let connection_uri = Uri.of_string "postgresql://default:password@localhost:5432/mydatabase"
   end in
   (module Config : DB_CONFIG)
 

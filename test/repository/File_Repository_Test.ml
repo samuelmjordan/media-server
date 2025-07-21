@@ -19,6 +19,9 @@ let test_insert_and_find _switch () =
   | Ok (Some found_file) -> 
     Alcotest.(check string) "name matches" file.name found_file.name;
     Alcotest.(check string) "path matches" file.path found_file.path;
+    Alcotest.(check string) "mime_type matches" file.mime_type found_file.mime_type;
+    Alcotest.(check bool) "is_directory matches" file.is_directory found_file.is_directory;
+    Alcotest.(check int) "size_bytes matches" file.size_bytes found_file.size_bytes;
     Lwt.return ()
   | Ok None -> Alcotest.fail "file not found"
   | Error e -> Alcotest.fail e
