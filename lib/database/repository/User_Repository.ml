@@ -1,10 +1,10 @@
 open Lwt.Syntax
 
-let create ~user_id ~name ~email () =
+let create user () =
   Db.with_connection (fun (module Db : Caqti_lwt.CONNECTION) ->
-    Db.exec User_Statements.Q.create_user (user_id, name, email))
+    Db.exec User_Statements.Q.create_user (user.User.user_id, user.name, user.email))
 
-let find_by_id ~user_id () =
+let find_by_id user_id () =
   let* result = Db.with_connection (fun (module Db : Caqti_lwt.CONNECTION) ->
     Db.find_opt User_Statements.Q.get_user_by_id user_id) in
   match result with
