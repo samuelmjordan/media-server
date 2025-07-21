@@ -1,11 +1,11 @@
 open Lwt.Syntax
 
-let create ?(conn = Db.default_provider) ~user_id ~name ~email () =
-  conn (fun (module Db : Caqti_lwt.CONNECTION) ->
+let create ~user_id ~name ~email () =
+  Db.with_connection (fun (module Db : Caqti_lwt.CONNECTION) ->
     Db.exec User_Statements.Q.create_user (user_id, name, email))
 
-let find_by_id ?(conn = Db.default_provider) ~user_id () =
-  let* result = conn (fun (module Db : Caqti_lwt.CONNECTION) ->
+let find_by_id ~user_id () =
+  let* result = Db.with_connection (fun (module Db : Caqti_lwt.CONNECTION) ->
     Db.find_opt User_Statements.Q.get_user_by_id user_id) in
   match result with
   | Ok (Some (user_id, name, email)) -> 
@@ -13,8 +13,8 @@ let find_by_id ?(conn = Db.default_provider) ~user_id () =
   | Ok None -> Lwt.return (Ok None)
   | Error e -> Lwt.return (Error (Caqti_error.show e))
 
-let find_all ?(conn = Db.default_provider) () =
-  let* result = conn (fun (module Db : Caqti_lwt.CONNECTION) ->
+let find_all () =
+  let* result = Db.with_connection (fun (module Db : Caqti_lwt.CONNECTION) ->
     Db.collect_list User_Statements.Q.get_all_users ()) in
   match result with
   | Ok rows ->

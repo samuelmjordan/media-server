@@ -12,9 +12,9 @@ let test_insert_and_find _switch () =
     is_directory = false;
     size_bytes = 1024;
   } in
-  let* insert_result = File_Repository.insert ~conn:Database_Fixture.test_provider file in
+  let* insert_result = File_Repository.insert file in
   Alcotest.(check (result unit string)) "insert succeeds" (Ok ()) insert_result;
-  let* find_result = File_Repository.find ~conn:Database_Fixture.test_provider file.file_id in
+  let* find_result = File_Repository.find file.file_id in
   match find_result with
   | Ok (Some found_file) -> 
     Alcotest.(check string) "name matches" file.name found_file.name;
@@ -29,7 +29,7 @@ let test_insert_and_find _switch () =
 let test_find_nonexistent _switch () =
   Database_Fixture.cleanup_between_tests ();
   let fake_id = File.File_Uuid.make () in
-  let* result = File_Repository.find ~conn:Database_Fixture.test_provider fake_id in
+  let* result = File_Repository.find fake_id in
   match result with
   | Ok None -> Lwt.return ()
   | Ok (Some _) -> Alcotest.fail "expected no file but found one"

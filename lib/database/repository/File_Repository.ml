@@ -1,14 +1,14 @@
 open Lwt.Syntax
 
-let insert ?(conn = Db.default_provider) file =
-  let* result = conn (fun (module Db : Caqti_lwt.CONNECTION) ->
+let insert file =
+  let* result = Db.with_connection (fun (module Db : Caqti_lwt.CONNECTION) ->
     Db.exec File_Statements.Q.insert_file (file.File.file_id, file.path, file.name, file.mime_type, file.is_directory, file.size_bytes)) in
   match result with
   | Ok _ -> Lwt.return (Ok ())
   | Error e -> Lwt.return (Error (Caqti_error.show e))
 
-let find ?(conn = Db.default_provider) file_id =
-  let* result = conn (fun (module Db : Caqti_lwt.CONNECTION) ->
+let find file_id =
+  let* result = Db.with_connection (fun (module Db : Caqti_lwt.CONNECTION) ->
     Db.find_opt File_Statements.Q.get_file file_id) in
   match result with
   | Ok (Some (file_id, path, name, mime_type, is_directory, size_bytes)) -> 
