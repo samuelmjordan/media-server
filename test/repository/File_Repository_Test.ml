@@ -2,6 +2,14 @@ open Lwt.Syntax
 open Alcotest_lwt
 open Nautilus
 
+let verify_file expected actual =
+  Alcotest.(check string) "file_id" (File.File_Uuid.to_string expected.File.file_id) (File.File_Uuid.to_string actual.File.file_id);
+  Alcotest.(check string) "path" expected.path actual.path;
+  Alcotest.(check string) "name" expected.name actual.name;
+  Alcotest.(check string) "mime_type" expected.mime_type actual.mime_type;
+  Alcotest.(check bool) "is_directory" expected.is_directory actual.is_directory;
+  Alcotest.(check int) "size_bytes" expected.size_bytes actual.size_bytes
+
 let test_insert_and_find _switch () =
   Database_Fixture.cleanup_between_tests ();
   let file = {
@@ -17,11 +25,7 @@ let test_insert_and_find _switch () =
   let* find_result = File_Repository.find file.file_id in
   match find_result with
   | Ok (Some found_file) -> 
-    Alcotest.(check string) "name matches" file.name found_file.name;
-    Alcotest.(check string) "path matches" file.path found_file.path;
-    Alcotest.(check string) "mime_type matches" file.mime_type found_file.mime_type;
-    Alcotest.(check bool) "is_directory matches" file.is_directory found_file.is_directory;
-    Alcotest.(check int) "size_bytes matches" file.size_bytes found_file.size_bytes;
+    verify_file file found_file;
     Lwt.return ()
   | Ok None -> Alcotest.fail "file not found"
   | Error e -> Alcotest.fail e
