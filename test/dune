@@ -3,9 +3,10 @@
 (executable
  (public_name test_runner)
  (name runner)
- (libraries nautilus alcotest alcotest-lwt dream yojson lwt uuidm caqti caqti-lwt caqti-driver-postgresql)
- (preprocess (pps lwt_ppx)))
+ (libraries nautilus alcotest alcotest-lwt otoml dream yojson lwt uuidm caqti caqti-lwt caqti-driver-postgresql)
+ (preprocess (pps lwt_ppx ppx_deriving.show)))
 
 (rule
  (alias runtest)
+ (deps ./runner.exe config.toml)
  (action (run ./runner.exe)))

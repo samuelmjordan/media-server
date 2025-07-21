@@ -27,3 +27,5 @@ echo -e "\033[32mclean done.\033[0m"
 echo -e "\033[32mstarting dune test...\033[0m"
 dune test
 echo -e "\033[32mtest done.\033[0m"
+
+docker compose -f ./test/compose.yml down
