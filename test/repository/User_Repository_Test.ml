@@ -60,7 +60,7 @@ let test_find_all_empty _switch () =
   | Error e -> Alcotest.fail (Caqti_error.show e)
 
 let cases =
-  [
+  "user repository", [
     test_case "create and find" `Quick test_create_and_find;
     test_case "find nonexistent" `Quick test_find_nonexistent;
     test_case "find all with data" `Quick test_find_all;

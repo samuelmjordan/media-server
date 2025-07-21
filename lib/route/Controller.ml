@@ -1,24 +1,24 @@
 let miscRoutes = [
-  Dream.get "/" 
+  Dream.get "/api" 
     (fun _ -> Dream.html "Good morning, world!");
-  Dream.post "/echo" 
+  Dream.post "/api/echo" 
     (fun request -> let%lwt body = Dream.body request in Dream.respond ~headers:["Content-Type", "application/octet-stream"] body);
 ]
 
 let userRoutes = [
-  Dream.get "/user" User_Handler.get_all_users;
-  Dream.get "/user/:user_id" User_Handler.get_user_by_id;
-  Dream.post "/user" User_Handler.create_user;
+  Dream.get "/api/user" User_Handler.get_all_users;
+  Dream.get "/api/user/:user_id" User_Handler.get_user_by_id;
+  Dream.post "/api/user" User_Handler.create_user;
 ]
 
 let fileRoutes = [
-  Dream.get "/directory" File_Handler.get_directory;
-  Dream.post "/directory/scan" File_Handler.scan_directory;
-  Dream.get "/file/:file_id" File_Handler.get_file;
+  Dream.get "/api/directory" File_Handler.get_directory;
+  Dream.post "/api/directory/scan" File_Handler.scan_directory;
+  Dream.get "/api/file/:file_id" File_Handler.get_file;
 ]
 
 let streamRoutes = [
-  Dream.get "/stream/:file_id" Stream_Handler.stream_media;
+  Dream.get "/api/stream/:file_id" Stream_Handler.stream_media;
 ]
 
 let routes = miscRoutes 

@@ -40,7 +40,7 @@ let test_find_nonexistent _switch () =
   | Error e -> Alcotest.fail e
 
 let cases =
-  [
+  "file repository", [
     test_case "insert and find" `Quick test_insert_and_find;
     test_case "find nonexistent" `Quick test_find_nonexistent; 
   ]
