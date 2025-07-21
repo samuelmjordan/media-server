@@ -2,12 +2,20 @@ open Lwt.Syntax
 
 type range = Single of int * int option | Multi of (int * int option) list
 
+type range_result = {
+  content: string;
+  start_byte: int;
+  end_byte: int;
+  total_size: int;
+}
+
 let read_file file_path =
   let open Lwt.Syntax in
   let* ic = Lwt_io.open_file ~mode:Input file_path in
   let* content = Lwt_io.read ic in
   let* () = Lwt_io.close ic in
   Lwt.return content
+
 let parse_range_header header file_size =
   let parse_single_range range_str =
     match String.split_on_char '-' (String.trim range_str) with
@@ -39,19 +47,6 @@ let parse_range_header header file_size =
      | multiple -> Some (Multi multiple))
   | _ -> None
 
-let make_range_headers ~file_size = function
-  | Single (start, end_opt) ->
-    let end_byte = match end_opt with 
-      | Some e -> min e (file_size - 1)
-      | None -> file_size - 1 in
-    let content_length = end_byte - start + 1 in
-    Ok [
-      ("Content-Range", Printf.sprintf "bytes %d-%d/%d" start end_byte file_size);
-      ("Accept-Ranges", "bytes");
-      ("Content-Length", string_of_int content_length);
-    ]
-  | Multi _ -> Error  "multipart not implemented"
-
 let read_file_range ~file_path ~start ~end_byte =
   let* ic = Lwt_io.open_file ~mode:Input file_path in
   let content_length = end_byte - start + 1 in
@@ -69,5 +64,5 @@ let make_range_response ~file_path ~file_name ~range ~file_size =
     let* content = read_file_range 
       ~file_path:(Filename.concat file_path file_name) 
       ~start ~end_byte in
-    Lwt.return (Ok content)
-  | Multi _ -> Lwt.return (Error  "multipart not implemented")
+    Lwt.return (Ok { content; start_byte = start; end_byte; total_size = file_size })
+  | Multi _ -> Lwt.return (Error "multipart not implemented")
