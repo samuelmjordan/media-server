@@ -14,3 +14,6 @@ let with_connection_uri uri f =
 let with_connection f = 
   let (module Config : DB_CONFIG) = default_config in
   with_connection_uri Config.connection_uri f
+
+let default_provider = with_connection
+let make_provider uri = with_connection_uri uri

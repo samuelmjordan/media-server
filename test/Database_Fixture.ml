@@ -1,5 +1,7 @@
-let test_uri = Uri.of_string "postgresql://default:password@localhost:5433/testdb"
+open Nautilus
 
+let test_uri = Uri.of_string "postgresql://default:password@localhost:5433/testdb"
+let test_provider f = Db.with_connection_uri test_uri f
 let cleanup_between_tests () =
   let cmd = "docker exec test-postgres-test-1 psql -U default -d testdb -c \"
     DO \\$\\$ 

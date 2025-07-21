@@ -14,7 +14,7 @@ let get_user_by_id req =
  match User.User_Uuid.from_string user_id_str with
  | Error _ -> Dream.respond ~status:`Bad_Request "invalid user id format"
  | Ok user_id ->
-   let* result = User_Repository.find_by_id ~user_id in
+   let* result = User_Repository.find_by_id ~user_id () in
    match result with
     | Error _ -> Dream.respond ~status:`Internal_Server_Error "internal server error"
     | Ok None -> Dream.respond ~status:`Not_Found "user not found"
@@ -29,7 +29,7 @@ let create_user req =
       | exception _ -> Dream.respond ~status:`Bad_Request "missing name or email"
       | (name, email) ->
         let user_id = User.User_Uuid.make () in
-        let* result = User_Repository.create ~user_id ~name ~email in
+        let* result = User_Repository.create ~user_id ~name ~email () in
         (match result with
           | Error _ -> Dream.respond ~status:`Internal_Server_Error "internal server error"
           | Ok () -> 
