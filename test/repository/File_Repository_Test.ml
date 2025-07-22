@@ -23,19 +23,19 @@ let test_insert_and_find _switch () =
   Alcotest.(check (result unit string)) "insert succeeds" (Ok ()) insert_result;
   let* find_result = File_Repository.find file.file_id in
   match find_result with
-  | Ok (Some found_file) -> 
-    verify_file file found_file;
-    Lwt.return ()
-  | Ok None -> Alcotest.fail "file not found"
-  | Error e -> Alcotest.fail e
+    | Error e -> Alcotest.fail e
+    | Ok None -> Alcotest.fail "file not found"
+    | Ok (Some found_file) -> 
+  verify_file file found_file;
+  Lwt.return ()
 
 let test_find_nonexistent _switch () =
   let fake_id = File.File_Uuid.make () in
   let* result = File_Repository.find fake_id in
   match result with
-  | Ok None -> Lwt.return ()
-  | Ok (Some _) -> Alcotest.fail "expected no file but found one"
-  | Error e -> Alcotest.fail e
+    | Error e -> Alcotest.fail e
+    | Ok None -> Lwt.return ()
+    | Ok (Some _) -> Alcotest.fail "expected no file but found one"
 
 let cases =
   "file repository", [
