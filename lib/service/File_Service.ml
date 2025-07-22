@@ -62,8 +62,8 @@ let scan_directory path =
 let delete_directory path =
   File_Repository.delete_by_directory path
 
-let get_directory_files path =
-  File_Repository.find_by_directory path
+let get_directory_files ~path ~mime_filter () =
+  File_Repository.find_by_directory ~path ~mime_filter ()
 
 let get_file file_id =
   File_Repository.find file_id

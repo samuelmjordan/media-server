@@ -7,12 +7,13 @@ let with_param req param_name f =
 
 let get_directory req =
   with_param req "path" (fun path ->
-    let* result = File_Service.get_directory_files path in
+  with_param req "mime" (fun mime_filter ->
+    let* result = File_Service.get_directory_files ~path ~mime_filter () in
     match result with
       | Error e -> Dream.respond ~status:`Internal_Server_Error e
       | Ok files ->
     let json = `List (List.map File.file_to_json files) in
-    Dream.json (Yojson.Safe.to_string json))
+    Dream.json (Yojson.Safe.to_string json)))
 
 let delete_directory req =
   with_param req "path" (fun path ->
@@ -22,7 +23,6 @@ let delete_directory req =
     | Ok 0 -> Dream.respond ~status:`Not_Found ({|{"deleted": 0}|})
     | Ok count -> Dream.json ~status:`OK (Printf.sprintf {|{"deleted": %d}|} count))
     
-
 let scan_directory req =
   with_param req "path" (fun path ->
     let* files = File_Service.scan_directory path in
