@@ -46,9 +46,6 @@ let read_directory ?(max_concurrent=200) path =
   in
   process_path path
 
-let delete_directory path =
-  File_Repository.delete_by_directory path
-
 let scan_directory path =
   let* files = read_directory path in
   let _ = File_Repository.delete_by_directory path in
@@ -61,6 +58,12 @@ let scan_directory path =
         | Error e -> Lwt.return (Error e)
   in
   insert_all files
+
+let delete_directory path =
+  File_Repository.delete_by_directory path
+
+let get_directory_files path =
+  File_Repository.find_by_directory path
 
 let get_file file_id =
   File_Repository.find file_id

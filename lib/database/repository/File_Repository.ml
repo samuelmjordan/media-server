@@ -18,6 +18,16 @@ let find file_id =
     | Ok (Some (file_id, path, name, mime_type, is_directory, size_bytes)) -> 
   Lwt.return (Ok (Some { File.file_id; path; name; mime_type; is_directory; size_bytes; }))
 
+let find_by_directory path =
+ let* result = Db.with_connection (fun (module Db : Caqti_lwt.CONNECTION) ->
+    Db.collect_list File_Statements.Q.find_files_by_directory path) in
+  match result with
+    | Error e -> Lwt.return (Error (Caqti_error.show e))
+    | Ok rows -> 
+  let files = List.map (fun (file_id, path, name, mime_type, is_directory, size_bytes) -> 
+    { File.file_id; path; name; mime_type; is_directory; size_bytes; }) rows in
+  Lwt.return (Ok files)
+
 let delete_by_directory path =
  let* result = Db.with_connection (fun (module Db : Caqti_lwt.CONNECTION) ->
     Db.collect_list File_Statements.Q.delete_files_by_directory path) in
