@@ -1,23 +1,22 @@
 open Lwt.Syntax
 
-let make_headers ~file_name ~mime_type ?(extra_headers = []) () =
-  let filename_header = ("Content-Disposition", Printf.sprintf "inline; filename=\"%s\"" file_name) in
+let make_headers ~mime_type ?(extra_headers = []) () =
+  let accept_ranges = ("Accept-Ranges", "bytes") in
   let content_type = ("Content-Type", mime_type) in
-  content_type :: filename_header :: extra_headers
+  content_type :: accept_ranges :: extra_headers
 
 let make_range_headers ~range_result =
   let { Stream_Service.start_byte; end_byte; total_size; _ } = range_result in
   let content_length = end_byte - start_byte + 1 in
   [
     ("Content-Range", Printf.sprintf "bytes %d-%d/%d" start_byte end_byte total_size);
-    ("Accept-Ranges", "bytes");
     ("Content-Length", string_of_int content_length);
   ]
 
 let serve_full_file file =
   let full_path = Filename.concat file.File.path file.name in
   let* content = Stream_Service.read_file full_path in
-  let headers = make_headers ~file_name:file.name ~mime_type:file.mime_type () in
+  let headers = make_headers ~mime_type:file.mime_type () in
   Dream.respond ~headers content
 
 let serve_range_request file range_header =
@@ -31,7 +30,7 @@ let serve_range_request file range_header =
     | Error err -> Dream.respond ~status:`Internal_Server_Error err
     | Ok range_result -> 
   let range_headers = make_range_headers ~range_result in
-  let headers = make_headers ~file_name:file.name ~mime_type:file.mime_type ~extra_headers:range_headers () in
+  let headers = make_headers ~mime_type:file.mime_type ~extra_headers:range_headers () in
   Dream.respond ~status:`Partial_Content ~headers range_result.content
 
 let stream_media request =
