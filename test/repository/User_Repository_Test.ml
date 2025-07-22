@@ -1,5 +1,5 @@
 open Lwt.Syntax
-open Alcotest_lwt
+open Case_Fixture
 open Nautilus
 
 let verify_user expected actual =
@@ -8,7 +8,6 @@ let verify_user expected actual =
   Alcotest.(check string) "email" expected.email actual.email
 
 let test_create_and_find _switch () =
-  Database_Fixture.cleanup_between_tests ();
   let user = { User.user_id = User.User_Uuid.make (); name = "john"; email = "john@example.com" } in
   let* create_result = User_Repository.create user () in
   (match create_result with
@@ -23,7 +22,6 @@ let test_create_and_find _switch () =
   | Error e -> Alcotest.fail e
 
 let test_find_nonexistent _switch () =
-  Database_Fixture.cleanup_between_tests ();
   let fake_id = User.User_Uuid.make () in
   let* result = User_Repository.find_by_id fake_id () in
   match result with
@@ -32,7 +30,6 @@ let test_find_nonexistent _switch () =
   | Error e -> Alcotest.fail e
 
 let test_find_all _switch () =
-  Database_Fixture.cleanup_between_tests ();
   (* create a few users *)
   let user1 = { User.user_id = User.User_Uuid.make (); name = "john"; email = "john@example.com" } in
   let user2 = { User.user_id = User.User_Uuid.make (); name = "tom"; email = "tom@example.com" } in
@@ -51,7 +48,6 @@ let test_find_all _switch () =
   | Error e -> Alcotest.fail (Caqti_error.show e)
 
 let test_find_all_empty _switch () =
-  Database_Fixture.cleanup_between_tests ();
   let* result = User_Repository.find_all () in
   match result with
   | Ok users -> 
@@ -61,8 +57,8 @@ let test_find_all_empty _switch () =
 
 let cases =
   "user repository", [
-    test_case "create and find" `Quick test_create_and_find;
-    test_case "find nonexistent" `Quick test_find_nonexistent;
-    test_case "find all with data" `Quick test_find_all;
-    test_case "find all empty" `Quick test_find_all_empty;
+    db_test_case "create and find" `Quick test_create_and_find;
+    db_test_case "find nonexistent" `Quick test_find_nonexistent;
+    db_test_case "find all with data" `Quick test_find_all;
+    db_test_case "find all empty" `Quick test_find_all_empty;
   ]

@@ -1,5 +1,5 @@
 open Lwt.Syntax
-open Alcotest_lwt
+open Case_Fixture
 open Nautilus
 
 let verify_file expected actual =
@@ -11,7 +11,6 @@ let verify_file expected actual =
   Alcotest.(check int) "size_bytes" expected.size_bytes actual.size_bytes
 
 let test_insert_and_find _switch () =
-  Database_Fixture.cleanup_between_tests ();
   let file = {
     File.file_id = File.File_Uuid.make ();
     path = "/test/path";
@@ -31,7 +30,6 @@ let test_insert_and_find _switch () =
   | Error e -> Alcotest.fail e
 
 let test_find_nonexistent _switch () =
-  Database_Fixture.cleanup_between_tests ();
   let fake_id = File.File_Uuid.make () in
   let* result = File_Repository.find fake_id in
   match result with
@@ -41,6 +39,6 @@ let test_find_nonexistent _switch () =
 
 let cases =
   "file repository", [
-    test_case "insert and find" `Quick test_insert_and_find;
-    test_case "find nonexistent" `Quick test_find_nonexistent; 
+    db_test_case "insert and find" `Quick test_insert_and_find;
+    db_test_case "find nonexistent" `Quick test_find_nonexistent; 
   ]

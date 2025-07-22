@@ -1,5 +1,5 @@
 open Lwt.Syntax
-open Alcotest_lwt
+open Case_Fixture
 open Nautilus
 
 let verify_user expected actual =
@@ -8,7 +8,6 @@ let verify_user expected actual =
   Alcotest.(check string) "email" expected.email actual.email
 
 let test_get_all_users _switch () =
-  Database_Fixture.cleanup_between_tests ();
   let req = Dream.request ~method_:`GET ~target:"/api/user" "" in
   let response = Dream.test Router_Fixture.router req in
   let* body = Dream.body response in
@@ -19,7 +18,6 @@ let test_get_all_users _switch () =
   Lwt.return ()
 
 let test_create_user _switch () =
-  Database_Fixture.cleanup_between_tests ();
   let user_json = `Assoc [("name", `String "test user"); ("email", `String "test@example.com")] in
   let body = Yojson.Safe.to_string user_json in
   let req = Dream.request ~method_:`POST ~target:"/api/user" body in
@@ -36,7 +34,6 @@ let test_create_user _switch () =
     Lwt.return ()
 
 let test_get_user_by_id _switch () =
-  Database_Fixture.cleanup_between_tests ();
   let user_json = `Assoc [("name", `String "fetch test"); ("email", `String "fetch@example.com")] in
   let body = Yojson.Safe.to_string user_json in
   let req = Dream.request ~method_:`POST ~target:"/api/user" body in
@@ -61,7 +58,7 @@ let test_get_user_by_id _switch () =
 
   let cases =
     "user handler", [
-    test_case "get all users" `Quick test_get_all_users;
-    test_case "create user" `Quick test_create_user;
-    test_case "get user by id" `Quick test_get_user_by_id;
+    db_test_case "get all users" `Quick test_get_all_users;
+    db_test_case "create user" `Quick test_create_user;
+    db_test_case "get user by id" `Quick test_get_user_by_id;
   ]
