@@ -46,8 +46,12 @@ let read_directory ?(max_concurrent=200) path =
   in
   process_path path
 
+let delete_directory path =
+  File_Repository.delete_by_directory path
+
 let scan_directory path =
   let* files = read_directory path in
+  let _ = File_Repository.delete_by_directory path in
   let rec insert_all = function
     | [] -> Lwt.return (Ok files)
     | file :: rest ->

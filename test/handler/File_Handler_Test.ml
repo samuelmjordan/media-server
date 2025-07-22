@@ -20,14 +20,14 @@ let test_get_directory_with_path _switch () =
   Lwt.return ()
 
 let test_scan_directory_missing_path _switch () =
-  let req = Dream.request ~method_:`POST ~target:"/api/directory/scan" "" in
+  let req = Dream.request ~method_:`PATCH ~target:"/api/directory" "" in
   let response = Dream.test Router_Fixture.router req in
   let status = Dream.status response in
   Alcotest.(check int) "status" 400 (Dream.status_to_int status);
   Lwt.return ()
 
 let test_scan_directory_with_path _switch () =
-  let req = Dream.request ~method_:`POST ~target:"/api/directory/scan?path=./data" "" in
+  let req = Dream.request ~method_:`PATCH ~target:"/api/directory?path=./data" "" in
   let response = Dream.test Router_Fixture.router req in
   let status = Dream.status response in
   Alcotest.(check bool) "status ok or error" true (Dream.status_to_int status = 200);
