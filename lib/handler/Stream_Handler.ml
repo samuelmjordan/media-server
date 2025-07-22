@@ -6,7 +6,7 @@ let make_headers ~mime_type ?(extra_headers = []) () =
   content_type :: accept_ranges :: extra_headers
 
 let make_range_headers ~range_result =
-  let { Stream_Service.start_byte; end_byte; total_size; _ } = range_result in
+  let { Stream_Service.start_byte; end_byte; total_size } = range_result in
   let content_length = end_byte - start_byte + 1 in
   [
     ("Content-Range", Printf.sprintf "bytes %d-%d/%d" start_byte end_byte total_size);
@@ -24,14 +24,24 @@ let serve_range_request file range_header =
   match Stream_Service.parse_range_header range_header file.File.size_bytes with
     | None -> Dream.respond ~status:`Bad_Request "invalid range header"
     | Some range ->
-  let* content_result = Stream_Service.make_range_response 
+  let* result = Stream_Service.make_range_response 
     ~file_path:file.path ~file_name:file.name ~range ~file_size:file.size_bytes in
-  match content_result with
+  match result with
     | Error err -> Dream.respond ~status:`Internal_Server_Error err
-    | Ok range_result -> 
+    | Ok (range_result, stream_func) -> 
   let range_headers = make_range_headers ~range_result in
   let headers = make_headers ~mime_type:file.mime_type ~extra_headers:range_headers () in
-  Dream.respond ~status:`Partial_Content ~headers range_result.content
+  Dream.stream ~status:`Partial_Content ~headers (fun stream ->
+    let rec write_chunks () =
+      let* chunk_opt = stream_func () in
+      match chunk_opt with
+      | None -> Lwt.return ()
+      | Some chunk ->
+        let* () = Dream.write stream chunk in
+        write_chunks ()
+    in
+    write_chunks ()
+  )
 
 let stream_media request =
   let file_id_str = Dream.param request "file_id" in
