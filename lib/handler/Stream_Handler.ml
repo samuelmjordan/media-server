@@ -23,27 +23,27 @@ let serve_full_file file =
 let serve_range_request file range_header =
   let* () = Lwt.return () in
   match Stream_Service.parse_range_header range_header file.File.size_bytes with
-  | None -> Dream.respond ~status:`Bad_Request "invalid range header"
-  | Some range ->
-    let* content_result = Stream_Service.make_range_response 
-      ~file_path:file.path ~file_name:file.name ~range ~file_size:file.size_bytes in
-    match content_result with
+    | None -> Dream.respond ~status:`Bad_Request "invalid range header"
+    | Some range ->
+  let* content_result = Stream_Service.make_range_response 
+    ~file_path:file.path ~file_name:file.name ~range ~file_size:file.size_bytes in
+  match content_result with
     | Error err -> Dream.respond ~status:`Internal_Server_Error err
     | Ok range_result -> 
-      let range_headers = make_range_headers ~range_result in
-      let headers = make_headers ~file_name:file.name ~mime_type:file.mime_type ~extra_headers:range_headers () in
-      Dream.respond ~status:`Partial_Content ~headers range_result.content
+  let range_headers = make_range_headers ~range_result in
+  let headers = make_headers ~file_name:file.name ~mime_type:file.mime_type ~extra_headers:range_headers () in
+  Dream.respond ~status:`Partial_Content ~headers range_result.content
 
 let stream_media request =
   let file_id_str = Dream.param request "file_id" in
   match File.File_Uuid.from_string file_id_str with
-  | Error _ -> Dream.respond ~status:`Bad_Request "invalid file id format"
-  | Ok file_id ->
-    let* result = File_Service.get_file file_id in
-    match result with
+    | Error _ -> Dream.respond ~status:`Bad_Request "invalid file id format"
+    | Ok file_id ->
+  let* result = File_Service.get_file file_id in
+  match result with
     | Error _ -> Dream.respond ~status:`Internal_Server_Error "internal server error"
     | Ok None -> Dream.respond ~status:`Not_Found "file not found"
     | Ok (Some file) -> 
-      match Dream.header request "Range" with
-      | None -> serve_full_file file
-      | Some range_header -> serve_range_request file range_header
+  match Dream.header request "Range" with
+    | None -> serve_full_file file
+    | Some range_header -> serve_range_request file range_header
