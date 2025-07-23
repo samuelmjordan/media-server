@@ -4,10 +4,15 @@ type db_config = {
   user: string;
   password: string;
   database: string;
-} [@@deriving show]
+}
 
-(* just use a ref since there's only one config now *)
-let cached_config : db_config option ref = ref None
+type tmdb_config = {
+  url: string;
+  api_key: string;
+}
+
+let db_config : db_config option ref = ref None
+let tmdb_config : tmdb_config option ref = ref None
 
 let load_toml_content () =
   let ic = open_in "config.toml" in
@@ -19,7 +24,7 @@ let load_toml_content () =
 let toml_content = lazy (load_toml_content ())
 
 let get_db_config () =
-  match !cached_config with
+  match !db_config with
   | Some config -> config
   | None ->
     let toml = Lazy.force toml_content in
@@ -31,14 +36,26 @@ let get_db_config () =
       password = Otoml.find toml Otoml.get_string (base_path @ ["password"]);
       database = Otoml.find toml Otoml.get_string (base_path @ ["database"]);
     } in
-    cached_config := Some config;
+    db_config := Some config;
     config
 
-(* preload config at startup *)
+let get_tmdb_config () =
+  match !tmdb_config with
+  | Some config -> config
+  | None ->
+    let toml = Lazy.force toml_content in
+    let base_path = ["tmdb"] in
+    let config = { 
+      url = Otoml.find toml Otoml.get_string (base_path @ ["url"]);
+      api_key = Otoml.find toml Otoml.get_string (base_path @ ["api_key"]);
+    } in
+    tmdb_config := Some config;
+    config
+
 let initialize_configs () =
   Printf.printf "loading config...\n%!";
-  let config = get_db_config () in
-  Printf.printf "%s\n%!" (show_db_config config);
+  let _ = get_db_config () in
+  let _ = get_tmdb_config () in
   Printf.printf "config loaded ✓\n%!"
 
 let db_uri_from_config config =

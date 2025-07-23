@@ -29,6 +29,8 @@ let media_metadata_to_json metadata =
     ("video", `Bool metadata.video);
   ]
 
+  open Yojson.Safe.Util
+
 let make 
   ~file_id
   ~adult
@@ -56,3 +58,23 @@ let make
     title;
     video;
   }
+
+let response_json_to_media_metadata json file_id =
+  try
+    let adult = json |> member "adult" |> to_bool in
+    let backdrop_path = json |> member "backdrop_path" |> to_string_option |> Option.value ~default:"" in
+    let tmdb_id = json |> member "id" |> to_int |> Int64.of_int in
+    let original_language = json |> member "original_language" |> to_string in
+    let original_title = json |> member "original_title" |> to_string in
+    let overview = json |> member "overview" |> to_string in
+    let popularity = json |> member "popularity" |> to_float in
+    let poster_path = json |> member "poster_path" |> to_string_option |> Option.value ~default:"" in
+    let release_date = json |> member "release_date" |> to_string in
+    let title = json |> member "title" |> to_string in
+    let video = json |> member "video" |> to_bool in
+    Ok (make 
+      ~file_id ~adult ~backdrop_path ~tmdb_id ~original_language 
+      ~original_title ~overview ~popularity ~poster_path 
+      ~release_date ~title ~video)
+  with
+  | exn -> Error (Printf.sprintf "parse error: %s" (Printexc.to_string exn))
