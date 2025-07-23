@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+dune clean
 dune build
 docker compose up -d
 sleep 2

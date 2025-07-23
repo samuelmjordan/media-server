@@ -20,15 +20,6 @@ CREATE TABLE file_ (
 
 CREATE INDEX idx_file_file_id ON file_ (file_id);
 
--- Trigger to automatically update last_updated timestamp
-CREATE OR REPLACE FUNCTION update_last_updated_column()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.last_updated = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
-
 -- Trigger to maintain last_updated
 CREATE TRIGGER update_file_last_updated
    BEFORE UPDATE ON file_
