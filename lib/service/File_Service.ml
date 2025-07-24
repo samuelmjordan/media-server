@@ -63,11 +63,16 @@ let scan_directory path =
           | Error e -> Lwt.return (Error e)
           | Ok () -> 
             let* media_metadata = Tmdb_Client.movie_search file.file_id parsed_file.parsed_name parsed_file.year_opt in
-            (match media_metadata with
+            match media_metadata with
               | None -> insert_all rest
               | Some metadata ->
-                let _ = Lwt.ignore_result (Media_Metadata_Repository.insert metadata) in
-                insert_all rest)
+                let* _ = 
+                  let* result = Media_Metadata_Repository.insert metadata in
+                  (match result with
+                  | Error e -> Lwt_io.eprintf "metadata insert failed: %s\n" e
+                  | Ok () -> Lwt.return_unit)
+                in
+                insert_all rest
   in
   insert_all files
 

@@ -28,7 +28,9 @@ let movie_search file_id name year =
       | first :: _ -> 
         (match Media_Metadata.response_json_to_media_metadata first file_id with
           | Ok metadata -> Lwt.return (Some metadata)
-          | Error _ -> Lwt.return None))
+          | Error msg -> 
+              Dream.log "Media_Metadata parse error: %s" msg;
+              Lwt.return None))
   | _ -> 
     let* body_string = Cohttp_lwt.Body.to_string body in
     let status_string = Cohttp.Code.string_of_status status in

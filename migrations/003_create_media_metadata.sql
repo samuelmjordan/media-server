@@ -15,16 +15,13 @@ CREATE TABLE media_metadata_ (
    release_date DATE NOT NULL,
    title TEXT NOT NULL,
    video BOOLEAN NOT NULL,
-   vote_average NUMERIC NOT NULL,
-   vote_count INTEGER NOT NULL,
 
    -- Audit fields
    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
    last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
    -- Constraints
-   CONSTRAINT fk_file_media_metadata_file_id FOREIGN KEY(file_id) REFERENCES file_(file_id) ON DELETE CASCADE,
-   CONSTRAINT media_metadata_tmdb_id_unique UNIQUE (tmdb_id)
+   CONSTRAINT fk_file_media_metadata_file_id FOREIGN KEY(file_id) REFERENCES file_(file_id) ON DELETE CASCADE
 );
 
 -- Trigger for media_metadata_ table (not file_)
