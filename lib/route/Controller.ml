@@ -22,7 +22,13 @@ let streamRoutes = [
   Dream.get "/api/stream/:file_id" Stream_Handler.stream_media;
 ]
 
+let webRoutes = [
+  Dream.get "/library" Web_Handler.library_screen;
+  Dream.get "/static/**" (Dream.static "static/");
+]
+
 let routes = miscRoutes 
   @ userRoutes 
   @ fileRoutes
   @ streamRoutes
+  @ webRoutes
