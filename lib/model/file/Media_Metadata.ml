@@ -1,3 +1,5 @@
+open Yojson.Safe.Util
+
 type media_metadata = {
   file_id: File.File_Uuid.uuid;
   adult: bool;
@@ -28,8 +30,6 @@ let media_metadata_to_json metadata =
     ("title", `String metadata.title);
     ("video", `Bool metadata.video);
   ]
-
-  open Yojson.Safe.Util
 
 let make 
   ~file_id
