@@ -31,7 +31,7 @@ if [ -f ".env" ]; then
             # Only export if name is valid
             if [[ $name =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]]; then
                 export "$name"="$value"
-                echo -e "\033[90mLoaded: $name\033[0m"
+                echo -e "\033[90mLoaded: $name=$value\033[0m"
             fi
         fi
     done < .env

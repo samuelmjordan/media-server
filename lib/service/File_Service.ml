@@ -48,14 +48,26 @@ let read_directory ?(max_concurrent=200) path =
 
 let scan_directory path =
   let* files = read_directory path in
-  let _ = File_Repository.delete_by_directory path in
+  let* _ = File_Repository.delete_by_directory path in
   let rec insert_all = function
     | [] -> Lwt.return (Ok files)
+    | file :: rest when not (String.sub file.File.mime_type 0 6 = "video/") ->
+        let* result = File_Repository.insert file in
+        (match result with
+          | Error e -> Lwt.return (Error e)
+          | Ok () -> insert_all rest)
     | file :: rest ->
+        let parsed_file = Name_Parser_Service.sanitise_filename file.File.name in
         let* result = File_Repository.insert file in
         match result with
-        | Ok () -> insert_all rest
-        | Error e -> Lwt.return (Error e)
+          | Error e -> Lwt.return (Error e)
+          | Ok () -> 
+            let* media_metadata = Tmdb_Client.movie_search file.file_id parsed_file.parsed_name parsed_file.year_opt in
+            (match media_metadata with
+              | None -> insert_all rest
+              | Some metadata ->
+                let _ = Lwt.ignore_result (Media_Metadata_Repository.insert metadata) in
+                insert_all rest)
   in
   insert_all files
 
