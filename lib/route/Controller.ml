@@ -24,6 +24,7 @@ let streamRoutes = [
 
 let webRoutes = [
   Dream.get "/library" Web_Handler.library_screen;
+  Dream.get "/film/:file_id" Web_Handler.film_detail;
   Dream.get "/static/**" (Dream.static "static/");
 ]
 
