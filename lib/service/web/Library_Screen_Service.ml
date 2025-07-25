@@ -25,7 +25,7 @@ let get_library_screen =
     | Ok films ->
   let page = html
     (head
-      (title (txt "film library"))
+      (title (txt "Nautilus"))
       [link ~rel:[`Stylesheet] ~href:"/static/style.css" ();
        script ~a:[a_src "https://unpkg.com/htmx.org@1.9.10"] 
          (Unsafe.data "")])

@@ -3,10 +3,9 @@ open Yojson.Safe.Util
 
 let movie_search file_id name year =
   let { Config.url; api_key; } = Config.get_tmdb_config () in
-  api_key |> ignore;
   let headers = Cohttp.Header.add_list (Cohttp.Header.init ()) [
     ("accept", "application/json");
-    ("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5ZTAyYTFjMmJhMDI0YmYwMmFmMzU0MTcwMDlhMTg0MiIsIm5iZiI6MTc1MzIxNTgyNy41Mzc5OTk5LCJzdWIiOiI2ODdmZjM1MzZhMzgwNGMyMGUxNmFiZDkiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.I5kqJh6B5GAnd9-PNvLEZXdHz5nMCyTiAClhxGwIm8g");
+    ("Authorization", api_key);
   ] in
   let uri = Uri.of_string (url ^ "/3/search/movie")
     |> fun u -> Uri.add_query_param u ("query", [name])
