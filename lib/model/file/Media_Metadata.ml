@@ -59,6 +59,21 @@ let make
     video;
   }
 
+let no_metadata file =
+  make
+  ~file_id:file.File.file_id
+  ~adult:false
+  ~backdrop_path:"/static/placeholder.svg"
+  ~tmdb_id:0L 
+  ~original_language:"en" 
+  ~original_title:file.name
+  ~overview:"" 
+  ~popularity:0.0 
+  ~poster_path:"/static/placeholder.svg" 
+  ~release_date:"" 
+  ~title:file.name
+  ~video: true
+
 let response_json_to_media_metadata json file_id =
   try
     let adult = json |> member "adult" |> to_bool in

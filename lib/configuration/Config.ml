@@ -28,7 +28,6 @@ let load_toml_content () =
   let raw_content = really_input_string ic len in
   close_in ic;
   let substituted_content = substitute_env_vars raw_content in
-  Printf.printf "substituted toml:\n%s\n%!" substituted_content;
   try
     Otoml.Parser.from_string substituted_content
   with 
