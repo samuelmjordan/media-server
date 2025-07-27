@@ -1,9 +1,9 @@
 [database]
-host = "localhost"
-port = 5432
-user = "default"
-password = "password"
-database = "mydatabase"
+host = "${DB_HOST}"
+port = ${DB_PORT}
+user = "${DB_USER}"
+password = "${DB_PASSWORD}"
+database = "${DB_NAME}"
 
 [tmdb]
 url = "https://api.themoviedb.org"

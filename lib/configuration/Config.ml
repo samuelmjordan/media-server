@@ -14,12 +14,31 @@ type tmdb_config = {
 let db_config : db_config option ref = ref None
 let tmdb_config : tmdb_config option ref = ref None
 
+let substitute_env_vars content =
+  let env_var_pattern = Re.Perl.compile_pat "\\$\\{([A-Z_][A-Z0-9_]*)\\}" in
+  Re.replace env_var_pattern content ~f:(fun groups ->
+    let var_name = Re.Group.get groups 1 in
+    try Sys.getenv var_name
+    with Not_found -> failwith ("Environment variable not found: " ^ var_name)
+  )
+
 let load_toml_content () =
   let ic = open_in "config.toml" in
   let len = in_channel_length ic in
-  let content = really_input_string ic len in
+  let raw_content = really_input_string ic len in
   close_in ic;
-  Otoml.Parser.from_string content
+  let substituted_content = substitute_env_vars raw_content in
+  Printf.printf "substituted toml:\n%s\n%!" substituted_content;
+  try
+    Otoml.Parser.from_string substituted_content
+  with 
+  | Otoml__Common.Parse_error (pos_opt, msg) -> 
+      let pos_str = match pos_opt with 
+        | Some (line, col) -> Printf.sprintf " at line %d, col %d" line col
+        | None -> ""
+      in
+      failwith ("toml parse error" ^ pos_str ^ ": " ^ msg)
+  | e -> raise e
 
 let toml_content = lazy (load_toml_content ())
 

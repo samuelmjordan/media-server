@@ -2,7 +2,7 @@
 # OCAMLPARAM: unset
 # Shared cache: enabled-except-user-rules
 # Shared cache location: /home/samuel/.cache/dune/db
-# Workspace root: /home/samuel/Documents/dev/nautilus
+# Workspace root: /home/samuel/Documents/dev/media-server
 # Auto-detected concurrency: 12
 # Dune context:
 #  { name = "default"
@@ -13,4 +13,4 @@
 #  ; build_dir = In_build_dir "default"
 #  ; instrument_with = []
 #  }
-$ /home/samuel/.opam/stable/bin/ocamlc.opt -config > /tmp/dune_6c76f8_output
+$ /home/samuel/.opam/stable/bin/ocamlc.opt -config > /tmp/dune_09262f_output
