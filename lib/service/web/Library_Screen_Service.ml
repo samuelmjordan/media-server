@@ -2,14 +2,11 @@ open Lwt.Syntax
 open Media_Metadata
 open Tyxml.Html
 
-let get_film_metadata film_file =
+let get_films_metadata film_file =
   let* metadata = Media_Metadata_Repository.find(film_file.File.file_id) in
   Lwt.return (match metadata with
-    | Error e -> 
-      Dream.log "Error: %s" e;
-      Ok (no_metadata film_file)
-    | Ok Some m -> Ok m
-    | Ok None -> Ok (no_metadata film_file))
+    | Ok Some m -> m
+    | _ -> no_metadata film_file)
 
 
 let get_film_card film =
@@ -34,9 +31,7 @@ let get_library_screen () =
     | Error e -> Lwt.return (Error e)
     | Ok film_files -> 
       Dream.log "films: %d" (List.length film_files);
-      let* film_metadata = 
-        let* results = Lwt_list.map_s get_film_metadata film_files in
-        Lwt.return (List.filter_map Result.to_option results) in
+      let* film_metadata = Lwt_list.map_p get_films_metadata film_files in
       let page = html
         (head
           (title (txt "Nautilus"))
