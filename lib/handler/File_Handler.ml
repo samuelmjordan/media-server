@@ -1,13 +1,9 @@
 open Lwt.Syntax
-
-let with_param req param_name f =
-  match Dream.query req param_name with
-  | None -> Dream.json ~status:`Bad_Request ("missing " ^ param_name ^ " param")
-  | Some value -> f value
+open Handler
 
 let get_directory req =
-  with_param req "path" (fun path ->
-  with_param req "mime" (fun mime_filter ->
+  with_query_param req "path" (fun path ->
+  with_query_param req "mime" (fun mime_filter ->
     let* result = File_Service.get_directory_files ~path ~mime_filter () in
     match result with
       | Error e -> Dream.respond ~status:`Internal_Server_Error e
@@ -16,7 +12,7 @@ let get_directory req =
     Dream.json (Yojson.Safe.to_string json)))
 
 let delete_directory req =
-  with_param req "path" (fun path ->
+  with_query_param req "path" (fun path ->
   let* result = File_Service.delete_directory path in
   match result with
     | Error _ -> Dream.respond ~status:`Internal_Server_Error "internal server error"
@@ -24,7 +20,7 @@ let delete_directory req =
     | Ok count -> Dream.json ~status:`OK (Printf.sprintf {|{"deleted": %d}|} count))
     
 let scan_directory req =
-  with_param req "path" (fun path ->
+  with_query_param req "path" (fun path ->
     let* files = File_Service.scan_directory path in
     match files with
       | Error _ -> Dream.respond ~status:`Internal_Server_Error "internal server error"

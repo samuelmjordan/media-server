@@ -1,0 +1,1 @@
+type t = { start: int; end_byte: int; total: int }
