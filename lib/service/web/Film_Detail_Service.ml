@@ -13,8 +13,9 @@ let get_film_detail_screen file_id =
       if (Hls.isSupported()) {
         console.log("SUPPORTED")
         const hls = new Hls({
-          debug: true,
-          enableWorker: false
+          maxBufferLength: 30,
+          maxBufferSize: 60*1000*1000,
+          maxBufferHole: 0.5
         });
         window.currentHls = hls;
         hls.loadSource(hlsUrl);
