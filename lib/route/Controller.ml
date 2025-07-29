@@ -1,16 +1,3 @@
-let miscRoutes = [
-  Dream.get "/api" 
-    (fun _ -> Dream.html "Good morning, world!");
-  Dream.post "/api/echo" 
-    (fun request -> let%lwt body = Dream.body request in Dream.respond ~headers:["Content-Type", "application/octet-stream"] body);
-]
-
-let userRoutes = [
-  Dream.get "/api/user" User_Handler.get_all_users;
-  Dream.get "/api/user/:user_id" User_Handler.get_user_by_id;
-  Dream.post "/api/user" User_Handler.create_user;
-]
-
 let fileRoutes = [
   Dream.get "/api/directory" File_Handler.get_directory;
   Dream.delete "/api/directory" File_Handler.delete_directory;
@@ -29,8 +16,7 @@ let webRoutes = [
   Dream.get "/favicon.ico" (Dream.from_filesystem "static" "favicon.ico");
 ]
 
-let routes = miscRoutes 
-  @ userRoutes 
-  @ fileRoutes
+let routes =
+  fileRoutes
   @ streamRoutes
   @ webRoutes
