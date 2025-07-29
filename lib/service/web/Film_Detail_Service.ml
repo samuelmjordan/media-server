@@ -22,11 +22,6 @@ let get_film_detail_screen file_id =
   match metadata_result with
     | Error e -> Lwt.return (Error e)
     | Ok metadata ->
-      let url_prefix = if metadata.tmdb_id = 0L then "" else "https://image.tmdb.org/t/p/w500" in
-      let backdrop_url = 
-        url_prefix ^ metadata.backdrop_path in
-      let poster_url = 
-        url_prefix ^ metadata.poster_path in
       let stream_url = "/api/stream/" ^ metadata.file_id in
       let page = html
         (head
@@ -52,11 +47,11 @@ let get_film_detail_screen file_id =
         (body [
           div ~a:[a_class ["film-detail"]] [
             div ~a:[a_class ["backdrop"]] [
-              img ~src:backdrop_url ~alt:metadata.title ();
+              img ~src:(Media_Metadata.get_backdrop_url metadata) ~alt:metadata.title ();
             ];
             div ~a:[a_class ["detail-content"]] [
               div ~a:[a_class ["poster-section"]] [
-                img ~src:poster_url ~alt:metadata.title ();
+                img ~src:(Media_Metadata.get_poster_url metadata) ~alt:metadata.title ();
               ];
               div ~a:[a_class ["info-section"]] [
                 h1 [txt metadata.title];
@@ -69,7 +64,6 @@ let get_film_detail_screen file_id =
                 a ~a:[a_href "/library"; a_class ["back-btn"]] [txt "← Back to Library"];
               ];
             ];
-            (* hidden video player *)
             div ~a:[a_class ["video-player-container"]; a_id "player-container"] [
               video ~a:[a_class ["video-player"]; a_id "video-player"; a_controls ()] [];
               button ~a:[a_class ["close-player"]; a_onclick "hidePlayer()"] [txt "✕"];

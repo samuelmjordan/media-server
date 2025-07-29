@@ -9,21 +9,19 @@ let get_films_metadata film_file =
     | _ -> no_metadata film_file)
 
 
-let get_film_card film =
-  let poster_url_prefix = if film.tmdb_id = 0L then "" else "https://image.tmdb.org/t/p/w500" in
-  let poster_url = poster_url_prefix ^ film.Media_Metadata.poster_path in
-  a ~a:[a_href ("/film/" ^ film.file_id); a_class ["film-card-link"]] [
+let get_film_card metadata =
+  a ~a:[a_href ("/film/" ^ metadata.file_id); a_class ["film-card-link"]] [
     div ~a:[a_class ["film-card"]] [
-      img ~src:poster_url ~alt:film.title ();
+      img ~src:(Media_Metadata.get_poster_url metadata) ~alt:metadata.title ();
       div ~a:[a_class ["film-overlay"]] [
-        h3 [txt film.title];
-        span ~a:[a_class ["year"]] [txt film.release_date];
+        h3 [txt metadata.title];
+        span ~a:[a_class ["year"]] [txt metadata.release_date];
       ];
     ]
   ]
 
-let get_films_grid films =
-  div ~a:[a_class ["films-grid"]] (List.map get_film_card films)
+let get_films_grid metadata_list =
+  div ~a:[a_class ["films-grid"]] (List.map get_film_card metadata_list)
 
 let get_library_screen () =
   let* film_files = File_Service.get_directory_files ~path:"/home/samuel/jellyfin/data" ~mime_filter:"video" () in

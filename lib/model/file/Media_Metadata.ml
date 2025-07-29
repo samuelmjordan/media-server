@@ -93,3 +93,12 @@ let response_json_to_media_metadata json file_id =
       ~release_date ~title ~video)
   with
   | exn -> Error (Printf.sprintf "parse error: %s" (Printexc.to_string exn))
+
+let get_url_prefix metadata =
+  if metadata.tmdb_id = 0L then "" else "https://image.tmdb.org/t/p/w500"
+
+let get_backdrop_url metadata =
+  get_url_prefix metadata ^ metadata.backdrop_path
+
+let get_poster_url metadata =
+  get_url_prefix metadata ^ metadata.poster_path
