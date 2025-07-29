@@ -7,10 +7,8 @@ let fileRoutes = [
 
 let streamRoutes = [
   Dream.get "/api/stream/:file_id/master.m3u8" Stream_Handler.master_playlist;
-  (*
-  Dream.get "/api/stream/:file_id/:quality/index.m3u8" ...;
-  Dream.get "/api/stream/:file_id/:quality/segment/:num" ...;
-  *)
+  Dream.get "/api/stream/:file_id/:quality/index.m3u8" Stream_Handler.media_playlist;
+  Dream.get "/api/stream/:file_id/:quality/segment/:num" Stream_Handler.serve_segment;
 ]
 
 let webRoutes = [

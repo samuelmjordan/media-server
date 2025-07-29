@@ -3,6 +3,55 @@ open Media_Metadata
 open Tyxml.Html
 
 let get_film_detail_screen file_id =
+  let js =
+    {|
+    function showPlayer(fileId) {
+      const container = document.getElementById('player-container');
+      const video = document.getElementById('video-player');
+      const hlsUrl = '/api/stream/' + fileId + '/master.m3u8';
+      
+      if (Hls.isSupported()) {
+        console.log("SUPPORTED")
+        const hls = new Hls({
+          debug: true,
+          enableWorker: false
+        });
+        window.currentHls = hls;
+        hls.loadSource(hlsUrl);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, function() {
+          video.play();
+        });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        console.log("NATIVE")
+        video.src = hlsUrl;
+        video.play();
+      } else {
+        console.log("NOT SUPPORTED")
+        video.src = '/api/stream/' + fileId;
+        video.play();
+      }
+      
+      container.style.display = 'flex';
+    }
+
+    function hidePlayer() {
+      const container = document.getElementById('player-container');
+      const video = document.getElementById('video-player');
+      video.pause();
+      
+      if (window.currentHls) {
+        window.currentHls.destroy();
+        window.currentHls = null;
+      }
+      
+      video.src = '';
+      container.style.display = 'none';
+    }
+    |}
+  in
+
+
   let* file_optional_result = File_Repository.find file_id in
   match file_optional_result with
     | Error e -> Lwt.return (Error e)
@@ -22,28 +71,12 @@ let get_film_detail_screen file_id =
   match metadata_result with
     | Error e -> Lwt.return (Error e)
     | Ok metadata ->
-      let stream_url = "/api/stream/" ^ metadata.file_id in
       let page = html
         (head
           (title (txt metadata.title))
           [link ~rel:[`Stylesheet] ~href:"/static/style.css" ();
-          script ~a:[] (Unsafe.data {|
-          function showPlayer(streamUrl) {
-            const container = document.getElementById('player-container');
-            const video = document.getElementById('video-player');
-            video.src = streamUrl;
-            container.style.display = 'flex';
-            video.play();
-          }
-
-          function hidePlayer() {
-            const container = document.getElementById('player-container');
-            const video = document.getElementById('video-player');
-            video.pause();
-            video.src = '';
-            container.style.display = 'none';
-          }
-          |})])
+          script ~a:[a_src "https://cdn.jsdelivr.net/npm/hls.js@latest"] (txt "");
+          script ~a:[] (Unsafe.data js)])
         (body [
           div ~a:[a_class ["film-detail"]] [
             div ~a:[a_class ["backdrop"]] [
@@ -60,7 +93,7 @@ let get_film_detail_screen file_id =
                   span [txt ("Release: " ^ metadata.release_date)];
                   span [txt ("Rating: " ^ string_of_float metadata.popularity)];
                 ];
-                button ~a:[a_class ["play-btn"]; a_onclick ("showPlayer('" ^ stream_url ^ "')")] [txt "▶ Play"];
+                button ~a:[a_class ["play-btn"]; a_onclick ("showPlayer('" ^ metadata.file_id ^ "')")] [txt "▶ Play"];
                 a ~a:[a_href "/library"; a_class ["back-btn"]] [txt "← Back to Library"];
               ];
             ];
