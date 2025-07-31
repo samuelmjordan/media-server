@@ -34,9 +34,13 @@ let transcode_segment input_file segment_num quality output_file =
     "-ss"; string_of_float start_time;
     "-i"; input_file;
     "-t"; string_of_float segment_duration;
+    "-map"; "0:v:0";
+    "-map"; "0:a:0"; 
     "-c:v"; "libx264"; 
     "-preset"; "ultrafast";
     "-c:a"; "aac";
+    "-ac"; "2";
+    "-ar"; "48000";
     "-muxdelay"; "0";
     "-muxpreload"; "0";
     "-output_ts_offset"; string_of_float ts_offset;
