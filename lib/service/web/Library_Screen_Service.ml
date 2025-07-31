@@ -8,6 +8,21 @@ let get_films_metadata film_file =
     | Ok Some m -> m
     | _ -> no_metadata film_file)
 
+let normalize_title_for_sorting title =
+  let lower_title = String.lowercase_ascii title in
+  let len = String.length lower_title in
+  if len >= 4 && String.sub lower_title 0 4 = "the " then
+    String.sub lower_title 4 (len - 4)
+  else
+    lower_title
+
+let sort_metadata_alphabetically metadata_list =
+  List.sort (fun a b ->
+    let title_a = normalize_title_for_sorting a.Media_Metadata.title in
+    let title_b = normalize_title_for_sorting b.Media_Metadata.title in
+    String.compare title_a title_b
+  ) metadata_list
+
 
 let get_film_card metadata =
   a ~a:[a_href ("/film/" ^ metadata.file_id); a_class ["film-card-link"]] [
@@ -30,11 +45,12 @@ let get_library_screen () =
     | Ok film_files -> 
       Dream.log "films: %d" (List.length film_files);
       let* film_metadata = Lwt_list.map_p get_films_metadata film_files in
+      let sorted_metadata = sort_metadata_alphabetically film_metadata in
       let page = html
         (head
           (title (txt "Nautilus"))
           [link ~rel:[`Stylesheet] ~href:"/static/style.css" ();
           script ~a:[a_src "https://unpkg.com/htmx.org@1.9.10"] 
             (Unsafe.data "")])
-        (body [get_films_grid film_metadata])
+        (body [get_films_grid sorted_metadata])
       in Lwt.return (Ok page)
