@@ -1,4 +1,45 @@
 #!/bin/bash
+set -e
+
+# Load environment variables from .env file
+echo -e "\033[36mLoading environment variables from .env file...\033[0m"
+if [ -f ".env" ]; then
+    while IFS= read -r line || [ -n "$line" ]; do
+        # Strip carriage returns
+        line=$(echo "$line" | tr -d '\r')
+
+        # Skip comments and empty lines
+        if [[ $line =~ ^[[:space:]]*# ]] || [[ -z "$line" ]]; then
+            continue
+        fi
+
+        # Only process lines that contain =
+        if [[ $line == *"="* ]]; then
+            name="${line%%=*}"
+            value="${line#*=}"
+
+            # Trim whitespace from name
+            name=$(echo "$name" | xargs)
+
+            # Remove surrounding quotes
+            if [[ $value =~ ^\".*\"$ ]]; then
+                value="${value:1:-1}"
+            elif [[ $value =~ ^\'.*\'$ ]]; then
+                value="${value:1:-1}"
+            fi
+
+            # Only export if name is valid
+            if [[ $name =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]]; then
+                export "$name"="$value"
+                echo -e "\033[90mLoaded: $name=$value\033[0m"
+            fi
+        fi
+    done < .env
+else
+    echo -e "\033[33mWarning: .env file not found\033[0m"
+fi
+
+dune clean
 dune build
 docker compose -f ./test/compose.yml up -d
 sleep 2
@@ -19,10 +60,6 @@ for migration in migrations/*.sql; do
         echo "INSERT INTO schema_migrations (version) VALUES ('$filename');" | $PSQL
     fi
 done
-
-echo -e "\033[32mstarting dune clean...\033[0m"
-dune clean
-echo -e "\033[32mclean done.\033[0m"
 
 echo -e "\033[32mstarting dune test...\033[0m"
 dune test

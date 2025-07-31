@@ -1,4 +1,4 @@
-# dune exec nautilus
+# dune test
 # OCAMLPARAM: unset
 # Shared cache: enabled-except-user-rules
 # Shared cache location: /home/samuel/.cache/dune/db
@@ -13,4 +13,20 @@
 #  ; build_dir = In_build_dir "default"
 #  ; instrument_with = []
 #  }
-$ /home/samuel/.opam/stable/bin/ocamlc.opt -config > /tmp/dune_f5cdc8_output
+$ /home/samuel/.opam/stable/bin/ocamlc.opt -config > /tmp/dune_430cd4_output
+$ (cd _build/default/test && ./runner.exe)
+> loading config...
+> config loaded ✓
+> Testing `Tests'.
+> This run has ID `DHK99ITB'.
+>
+>   [OK]          file handler             0   get directory with path.
+>   [OK]          file handler             1   scan directory with path.
+>   [OK]          file handler             2   delete directory nonexistent.
+>   [OK]          file handler             3   get file invalid id.
+>   [OK]          file handler             4   get file nonexistent.
+>   [OK]          file repository          0   insert and find.
+>   [OK]          file repository          1   find nonexistent.
+>
+> Full test results in `~/Documents/dev/media-server/_build/default/test/_build/_tests/Tests'.
+> Test Successful in 0.674s. 7 tests run.

@@ -4,3 +4,10 @@ port = 5433
 user = "default"
 password = "password"
 database = "testdb"
+
+[tmdb]
+url = "https://api.themoviedb.org"
+api_key = "${TMDB_API_KEY}"
+
+[data]
+data_directory = "./data"
