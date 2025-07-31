@@ -8,3 +8,6 @@ database = "${DB_NAME}"
 [tmdb]
 url = "https://api.themoviedb.org"
 api_key = "${TMDB_API_KEY}"
+
+[data]
+data_directory = "${DATA_DIRECTORY}"

@@ -13,6 +13,7 @@ type tmdb_config = {
 
 let db_config : db_config option ref = ref None
 let tmdb_config : tmdb_config option ref = ref None
+let data_directory : string option ref = ref None
 
 let substitute_env_vars content =
   let env_var_pattern = Re.Perl.compile_pat "\\$\\{([A-Z_][A-Z0-9_]*)\\}" in
@@ -70,10 +71,21 @@ let get_tmdb_config () =
     tmdb_config := Some config;
     config
 
+let get_data_directory () =
+  match !data_directory with
+  | Some config -> config
+  | None ->
+    let toml = Lazy.force toml_content in
+    let base_path = ["data"] in
+    let config = Otoml.find toml Otoml.get_string (base_path @ ["data_directory"]) in
+    data_directory := Some config;
+    config
+
 let initialize_configs () =
   Printf.printf "loading config...\n%!";
   let _ = get_db_config () in
   let _ = get_tmdb_config () in
+  let _ = get_data_directory () in
   Printf.printf "config loaded ✓\n%!"
 
 let db_uri_from_config config =
