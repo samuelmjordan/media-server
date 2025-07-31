@@ -7,8 +7,11 @@ let library_screen _request =
     | Ok page -> Dream.html (Format.asprintf "%a" (Tyxml.Html.pp ()) page)
 
 let film_detail request =
-  let film_id = Dream.param request "file_id" in
-  let* page = Film_Detail_Service.get_film_detail_screen film_id in
-  match page with
-  | Error _ -> Dream.respond ~status:`Not_Found "film not found"
-  | Ok page -> Dream.html (Format.asprintf "%a" (Tyxml.Html.pp ()) page)
+  let film_id_str = Dream.param request "file_id" in
+  match File.File_Uuid.from_string film_id_str with
+  | Error _ -> Dream.respond ~status:`Internal_Server_Error "invalid file id format"
+  | Ok file_id ->
+    let* page = Film_Detail_Service.get_film_detail_screen file_id in
+    match page with
+    | Error _ -> Dream.respond ~status:`Internal_Server_Error "internal server error"
+    | Ok page -> Dream.html (Format.asprintf "%a" (Tyxml.Html.pp ()) page)

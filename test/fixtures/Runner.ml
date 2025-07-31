@@ -9,4 +9,6 @@ let () =
     Web_Handler_Test.cases;
     File_Repository_Test.cases;
     Media_Metadata_Repository_Test.cases;
+    Name_Parser_Service_Test.cases;
+    Byte_Range_Service_Test.cases;
   ]
