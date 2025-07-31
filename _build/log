@@ -13,20 +13,83 @@
 #  ; build_dir = In_build_dir "default"
 #  ; instrument_with = []
 #  }
-$ /home/samuel/.opam/stable/bin/ocamlc.opt -config > /tmp/dune_430cd4_output
+$ /home/samuel/.opam/stable/bin/ocamlc.opt -config > /tmp/dune_eb2067_output
 $ (cd _build/default/test && ./runner.exe)
 > loading config...
 > config loaded ✓
 > Testing `Tests'.
-> This run has ID `DHK99ITB'.
+> This run has ID `G2LUGZDS'.
 >
->   [OK]          file handler             0   get directory with path.
->   [OK]          file handler             1   scan directory with path.
->   [OK]          file handler             2   delete directory nonexistent.
->   [OK]          file handler             3   get file invalid id.
->   [OK]          file handler             4   get file nonexistent.
->   [OK]          file repository          0   insert and find.
->   [OK]          file repository          1   find nonexistent.
+>   [OK]          file handler                       0   get directory with path.
+>   [OK]          file handler                       1   get directory missing mime param.
+>   [OK]          file handler                       2   get directory with empty mime.
+>   [OK]          file handler                       3   get directory with video filter.
+>   [OK]          file handler                       4   scan directory with path.
+>   [OK]          file handler                       5   scan directory success.
+>   [OK]          file handler                       6   delete directory nonexistent.
+>   [OK]          file handler                       7   delete directory response.
+>   [OK]          file handler                       8   delete directory uses config directory.
+>   [OK]          file handler                       9   get file invalid id.
+>   [OK]          file handler                      10   get file nonexistent.
+>   [OK]          stream handler                     0   master playlist invalid file id.
+>   [OK]          stream handler                     1   master playlist nonexistent file.
+>   [OK]          stream handler                     2   master playlist content type.
+>   [OK]          stream handler                     3   media playlist invalid file id.
+>   [OK]          stream handler                     4   media playlist invalid quality.
+>   [OK]          stream handler                     5   media playlist nonexistent file.
+>   [OK]          stream handler                     6   media playlist content type.
+>   [OK]          stream handler                     7   serve segment invalid file id.
+>   [OK]          stream handler                     8   serve segment invalid quality.
+>   [OK]          stream handler                     9   serve segment nonexistent file.
+>   [OK]          stream handler                    10   serve segment invalid segment number.
+>   [OK]          stream handler                    11   serve segment content type.
+>   [OK]          web handler                        0   library screen response.
+> > [FAIL]        web handler                        1   film detail invalid file id.
+>   [FAIL]        web handler                        2   film detail nonexistent file.
+>   [OK]          web handler                        3   static file access.
+>   [OK]          web handler                        4   favicon access.
+>   [OK]          web handler                        5   static nested path.
+>   [OK]          web handler                        6   static directory traversal blocked.
+>   [OK]          file repository                    0   insert and find.
+>   [OK]          file repository                    1   find nonexistent.
+>   [OK]          file repository                    2   find by directory empty.
+>   [OK]          file repository                    3   find by directory with files.
+>   [OK]          file repository                    4   find by directory with mime filter.
+>   [OK]          file repository                    5   delete by directory empty.
+>   [OK]          file repository                    6   delete by directory with files.
+>   [OK]          file repository                    7   duplicate insert.
+>   [OK]          file repository                    8   large file handling.
+>   [OK]          media metadata repository          0   insert and find.
+>   [OK]          media metadata repository          1   find nonexistent.
+>   [OK]          media metadata repository          2   find all empty.
+>   [OK]          media metadata repository          3   find all with data.
+>   [OK]          media metadata repository          4   update metadata.
+>   [OK]          media metadata repository          5   update nonexistent.
+>   [OK]          media metadata repository          6   delete metadata.
+>   [OK]          media metadata repository          7   delete nonexistent.
+>   [OK]          media metadata repository          8   multiple metadata per file.
+>
+> ┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+> │ [FAIL]        web handler                        1   film detail invalid file id.                                                                                                                                                                                          │
+> └────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+> NOTICE:  truncate cascades to table "media_metadata_"
+> DO
+> ✓ tables truncated
+> ASSERT status
+> File "test/handler/Web_Handler_Test.ml", line 24, character 2:
+> FAIL status
+>
+>    Expected: `404'
+>    Received: `200'
+>
+> Raised at Alcotest_engine__Test.check in file "src/alcotest-engine/test.ml", line 216, characters 4-261
+> Called from Dune__exe__Web_Handler_Test.test_film_detail_invalid_file_id in file "test/handler/Web_Handler_Test.ml", line 24, characters 2-64
+> Called from Alcotest_lwt.run_test.(fun) in file "src/alcotest-lwt/alcotest_lwt.ml", line 24, characters 47-57
+> Called from Lwt.Sequential_composition.try_bind in file "src/core/lwt.ml", line 2139, characters 10-14
+>
+> Logs saved to `~/Documents/dev/media-server/_build/default/test/_build/_tests/Tests/web handler.001.output'.
+>  ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 >
 > Full test results in `~/Documents/dev/media-server/_build/default/test/_build/_tests/Tests'.
-> Test Successful in 0.674s. 7 tests run.
+> 2 failures! in 4.779s. 48 tests run.
+[1]
