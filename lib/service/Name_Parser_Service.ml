@@ -1,9 +1,35 @@
+let split_camel_case text =
+  Re.replace (Re.Perl.compile_pat "([a-z])([A-Z])") ~f:(fun g -> Re.Group.get g 1 ^ " " ^ Re.Group.get g 2) text
+
+let generate_title_variations title =
+  let words = String.split_on_char ' ' title in
+  let rec take n lst =
+    if n <= 0 then []
+    else match lst with
+      | [] -> []
+      | x :: xs -> x :: take (n - 1) xs
+  in
+  let rec build_variations acc word_count =
+    if word_count <= 0 then acc
+    else
+      let current_title = String.concat " " (take word_count words) |> String.trim in
+      if current_title <> "" then
+        build_variations (current_title :: acc) (word_count - 1)
+      else
+        build_variations acc (word_count - 1)
+  in
+  let word_count = List.length words in
+  let variations = build_variations [] word_count in
+  List.rev (List.sort_uniq String.compare (List.filter (fun s -> String.trim s <> "") variations))
+
 let sanitise_filename filename =
  let filename = 
    match String.rindex_opt filename '.' with
    | Some pos -> String.sub filename 0 pos
    | None -> filename in
+ let filename = split_camel_case filename in
  let year_regex = Re.Perl.compile_pat "\\b(19[0-9]{2}|20[0-9]{2})\\b" in
+ let filename = Re.replace_string (Re.Perl.compile_pat "[-._/,()\\[\\]{}]+") ~by:" " filename in
  let year_opt, filename = 
    try 
      let matches = Re.all year_regex filename in
@@ -27,11 +53,12 @@ let sanitise_filename filename =
        "\\b([0-9]+bit)\\b";
      ] in
      let cleaned = List.fold_left (fun acc pattern -> 
-       Re.replace_string (Re.Perl.compile_pat ~opts:[`Caseless] pattern) ~by:"" acc
+       let result = Re.replace_string (Re.Perl.compile_pat ~opts:[`Caseless] pattern) ~by:"" acc in
+       if result <> acc then Dream.log "Pattern '%s' matched in '%s' -> '%s'" pattern acc result;
+       result
      ) filename patterns in
      None, cleaned in
- let filename =
-   Re.replace_string (Re.Perl.compile_pat "[-._/,()\\[\\]{}]+") ~by:" " filename in
+ let filename = filename in
  let filename = 
    Re.replace_string (Re.Perl.compile_pat "\\s+") ~by:" " filename in
  let filename = String.trim filename in

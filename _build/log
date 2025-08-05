@@ -1,4 +1,4 @@
-# dune exec nautilus
+# dune test
 # OCAMLPARAM: unset
 # Shared cache: enabled-except-user-rules
 # Shared cache location: /home/samuel/.cache/dune/db
@@ -13,4 +13,95 @@
 #  ; build_dir = In_build_dir "default"
 #  ; instrument_with = []
 #  }
-$ /home/samuel/.opam/stable/bin/ocamlc.opt -config > /tmp/dune_1a251c_output
+$ /home/samuel/.opam/stable/bin/ocamlc.opt -config > /tmp/dune_78b4f3_output
+$ (cd _build/default/test && ./runner.exe)
+> loading config...
+> config loaded ✓
+> Testing `Tests'.
+> This run has ID `USBNNLPS'.
+>
+>   [OK]          file handler                       0   get directory with path.
+>   [OK]          file handler                       1   get directory missing mime param.
+>   [OK]          file handler                       2   get directory with empty mime.
+>   [OK]          file handler                       3   get directory with video filter.
+>   [OK]          file handler                       4   scan directory with path.
+>   [OK]          file handler                       5   scan directory success.
+>   [OK]          file handler                       6   delete directory nonexistent.
+>   [OK]          file handler                       7   delete directory response.
+>   [OK]          file handler                       8   delete directory uses config directory.
+>   [OK]          file handler                       9   get file invalid id.
+>   [OK]          file handler                      10   get file nonexistent.
+>   [OK]          stream handler                     0   master playlist invalid file id.
+>   [OK]          stream handler                     1   master playlist nonexistent file.
+>   [OK]          stream handler                     2   master playlist content type.
+>   [OK]          stream handler                     3   media playlist invalid file id.
+>   [OK]          stream handler                     4   media playlist invalid quality.
+>   [OK]          stream handler                     5   media playlist nonexistent file.
+>   [OK]          stream handler                     6   media playlist content type.
+>   [OK]          stream handler                     7   serve segment invalid file id.
+>   [OK]          stream handler                     8   serve segment invalid quality.
+>   [OK]          stream handler                     9   serve segment nonexistent file.
+>   [OK]          stream handler                    10   serve segment invalid segment number.
+>   [OK]          stream handler                    11   serve segment content type.
+>   [OK]          web handler                        0   library screen response.
+>   [OK]          web handler                        1   film detail invalid file id.
+>   [OK]          web handler                        2   film detail nonexistent file.
+>   [OK]          web handler                        3   static file access.
+>   [OK]          web handler                        4   favicon access.
+>   [OK]          web handler                        5   static nested path.
+>   [OK]          web handler                        6   static directory traversal blocked.
+>   [OK]          file repository                    0   insert and find.
+>   [OK]          file repository                    1   find nonexistent.
+>   [OK]          file repository                    2   find by directory empty.
+>   [OK]          file repository                    3   find by directory with files.
+>   [OK]          file repository                    4   find by directory with mime filter.
+>   [OK]          file repository                    5   delete by directory empty.
+>   [OK]          file repository                    6   delete by directory with files.
+>   [OK]          file repository                    7   duplicate insert.
+>   [OK]          file repository                    8   large file handling.
+>   [OK]          media metadata repository          0   insert and find.
+>   [OK]          media metadata repository          1   find nonexistent.
+>   [OK]          media metadata repository          2   find all empty.
+>   [OK]          media metadata repository          3   find all with data.
+>   [OK]          media metadata repository          4   update metadata.
+>   [OK]          media metadata repository          5   update nonexistent.
+>   [OK]          media metadata repository          6   delete metadata.
+>   [OK]          media metadata repository          7   delete nonexistent.
+>   [OK]          media metadata repository          8   multiple metadata per file.
+>   [OK]          name parser service                0   sanitise basic filename.
+>   [OK]          name parser service                1   sanitise with year.
+>   [OK]          name parser service                2   sanitise with quality.
+>   [OK]          name parser service                3   sanitise with codec.
+>   [OK]          name parser service                4   sanitise with release group.
+>   [OK]          name parser service                5   sanitise complex filename.
+>   [OK]          name parser service                6   sanitise no extension.
+>   [OK]          name parser service                7   sanitise multiple years.
+>   [OK]          name parser service                8   sanitise no year.
+>   [OK]          name parser service                9   sanitise old year.
+>   [OK]          name parser service               10   sanitise future year.
+>   [OK]          name parser service               11   sanitise special characters.
+>   [OK]          name parser service               12   sanitise empty filename.
+>   [OK]          name parser service               13   sanitise only extension.
+>   [OK]          name parser service               14   camel case splitting.
+>   [OK]          name parser service               15   pascal case splitting.
+>   [OK]          name parser service               16   title variations.
+>   [OK]          name parser service               17   camel case with codec.
+>   [OK]          byte range service                 0   parse range full range.
+>   [OK]          byte range service                 1   parse range from start.
+>   [OK]          byte range service                 2   parse range suffix.
+>   [OK]          byte range service                 3   parse range invalid format.
+>   [OK]          byte range service                 4   parse range invalid start end.
+>   [OK]          byte range service                 5   parse range start greater than end.
+>   [OK]          byte range service                 6   parse range out of bounds.
+>   [OK]          byte range service                 7   parse range negative start.
+>   [OK]          byte range service                 8   parse range start at file size.
+>   [OK]          byte range service                 9   parse range suffix too large.
+>   [OK]          byte range service                10   parse range zero suffix.
+>   [OK]          byte range service                11   parse range single byte.
+>   [OK]          byte range service                12   parse range entire file.
+>   [OK]          byte range service                13   parse range last byte.
+>   [OK]          library screen service             0   normalize title for sorting.
+>   [OK]          library screen service             1   sort metadata alphabetically.
+>
+> Full test results in `~/Documents/dev/media-server/_build/default/test/_build/_tests/Tests'.
+> Test Successful in 8.324s. 82 tests run.

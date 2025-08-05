@@ -85,6 +85,34 @@ let test_sanitise_only_extension _switch () =
   Alcotest.(check (option int)) "no year" None result.year_opt;
   Lwt.return ()
 
+let test_camel_case_splitting _switch () =
+  let result = Name_Parser_Service.sanitise_filename "EmpireOfDust.mkv" in
+  Alcotest.(check string) "camel case split" "Empire Of Dust" result.parsed_name;
+  Lwt.return ()
+
+let test_pascal_case_splitting _switch () =
+  let result = Name_Parser_Service.sanitise_filename "TheAvengersEndgame 2019.mp4" in
+  Alcotest.(check string) "pascal case split" "The Avengers Endgame" result.parsed_name;
+  Alcotest.(check (option int)) "year extracted" (Some 2019) result.year_opt;
+  Lwt.return ()
+
+let test_title_variations _switch () =
+  let variations = Name_Parser_Service.generate_title_variations "Empire Of Dust Extended Cut" in
+  Printf.printf "Generated variations: [%s]\n" (String.concat "; " variations);
+  let expected_variations = ["Empire Of Dust Extended Cut"; "Empire Of Dust Extended"; "Empire Of Dust"; "Empire Of"; "Empire"] in
+  List.iter (fun expected ->
+    Printf.printf "Checking for: '%s' in variations\n" expected;
+    Alcotest.(check bool) ("contains " ^ expected) true (List.mem expected variations)
+  ) expected_variations;
+  Lwt.return ()
+
+let test_camel_case_with_codec _switch () =
+  let result = Name_Parser_Service.sanitise_filename "EmpireOfDust_x264.mp4" in
+  Printf.printf "EmpireOfDust_x264.mp4 -> '%s'\n" result.parsed_name;
+  (* The pattern should remove x264, but let's check if it's working *)
+  Alcotest.(check string) "camel case with codec removed" "Empire Of Dust" result.parsed_name;
+  Lwt.return ()
+
 let cases =
   "name parser service", [
     db_test_case "sanitise basic filename" `Quick test_sanitise_basic_filename;
@@ -101,4 +129,8 @@ let cases =
     db_test_case "sanitise special characters" `Quick test_sanitise_special_characters;
     db_test_case "sanitise empty filename" `Quick test_sanitise_empty_filename;
     db_test_case "sanitise only extension" `Quick test_sanitise_only_extension;
+    db_test_case "camel case splitting" `Quick test_camel_case_splitting;
+    db_test_case "pascal case splitting" `Quick test_pascal_case_splitting;
+    db_test_case "title variations" `Quick test_title_variations;
+    db_test_case "camel case with codec" `Quick test_camel_case_with_codec;
   ]
