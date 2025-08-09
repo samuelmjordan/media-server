@@ -39,7 +39,7 @@ let get_films_grid metadata_list =
   div ~a:[a_class ["films-grid"]] (List.map get_film_card metadata_list)
 
 let get_library_screen () =
-  let* film_files = File_Service.get_directory_files ~path:"/home/samuel/jellyfin/data" ~mime_filter:"video" () in
+  let* film_files = File_Service.get_directory_files ~path:(Config.get_data_directory ()) ~mime_filter:"video" () in
   match film_files with
     | Error e -> Lwt.return (Error e)
     | Ok film_files -> 

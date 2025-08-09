@@ -13,7 +13,13 @@
 
 (package
  (name nautilus)
- (depends ocaml dune alcotest alcotest-lwt dream yojson lwt ppx_lwt caqti caqti-lwt caqti-driver-postgresql))
+ (synopsis "self hosted media server")
+ (depends 
+  ocaml dune 
+  alcotest alcotest-lwt 
+  dream yojson lwt lwt_ppx
+  caqti caqti-lwt caqti-driver-postgresql
+  otoml uuidm cohttp cohttp-lwt-unix re tyxml ppx_deriving))
 
 (formatting
  (enabled_for ocaml))

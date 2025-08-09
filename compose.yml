@@ -7,3 +7,31 @@ services:
       - 'POSTGRES_USER=default'
     ports:
       - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U default -d mydatabase"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nautilus:
+    build: .
+    ports:
+      - '8080:8080'
+    volumes:
+     - /home/samuel/jellyfin/data/films:/data/films
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=default
+      - DB_PASSWORD=password
+      - DB_NAME=mydatabase
+      - TMDB_API_KEY=Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5ZTAyYTFjMmJhMDI0YmYwMmFmMzU0MTcwMDlhMTg0MiIsIm5iZiI6MTc1MzIxNTgyNy41Mzc5OTk5LCJzdWIiOiI2ODdmZjM1MzZhMzgwNGMyMGUxNmFiZDkiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.I5kqJh6B5GAnd9-PNvLEZXdHz5nMCyTiAClhxGwIm8g
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

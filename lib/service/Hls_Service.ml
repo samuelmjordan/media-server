@@ -70,7 +70,10 @@ let ensure_dir_exists dir_path =
       Lwt.fail exn)
 
 let get_segment_path file_id quality segment_num =
-  let cache_dir = Printf.sprintf "/home/samuel/jellyfin/data/cache/segments/%s/%s" file_id (Quality.string_of_quality quality) in
+  let cache_dir = Printf.sprintf "%s/cache/segments/%s/%s" 
+    (Config.get_data_directory ()) 
+    file_id 
+    (Quality.string_of_quality quality) in
   let segment_file = Printf.sprintf "%s/segment_%d.ts" cache_dir segment_num in
   
   if Sys.file_exists segment_file then

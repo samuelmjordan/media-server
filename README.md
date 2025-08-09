@@ -1,12 +1,11 @@
 # Nautilus Media Server
 
-A high-performance, self-hosted media streaming server built with OCaml, featuring adaptive streaming, intelligent metadata management, and a modern web interface.
+A media streaming server built with OCaml, featuring adaptive streaming, intelligent metadata management, and a modern web interface.
 
 ## 🚀 Key Features
 
 - **Adaptive HLS Streaming** - Automatic quality adjustment and efficient video delivery
 - **Smart Metadata Integration** - Automatic movie/TV show information via TMDB API
-- **Byte-Range Streaming** - Optimized for large media files with resume capability
 - **Real-time Transcoding** - FFmpeg integration for on-the-fly format conversion
 - **Intelligent File Management** - Automatic media discovery and organization
 - **Responsive Web Interface** - Modern UI with seamless playback controls
@@ -16,7 +15,7 @@ A high-performance, self-hosted media streaming server built with OCaml, featuri
 - **Backend**: OCaml with Dream web framework
 - **Database**: PostgreSQL with async Caqti driver
 - **Streaming**: HLS (HTTP Live Streaming) with FFmpeg
-- **Frontend**: Vanilla JavaScript with modern CSS
+- **Frontend**: Built with HTMX
 - **Infrastructure**: Docker Compose for easy deployment
 - **Testing**: Comprehensive test suite with Alcotest
 
@@ -46,43 +45,20 @@ A high-performance, self-hosted media streaming server built with OCaml, featuri
 - **Video Streaming**: Implemented HLS protocol for adaptive streaming, fast scrubbing and broad support for different video types
 - **Testing**: Unit tests for all core services and repositories
 
-## 📦 Quick Start
+## 📦 Docker Quick Start
 
-### Prerequisites
+You must configure the volume in compose.yml where your films will live:
 
-- Docker & Docker Compose
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/jordan12sam/nautilus.git
-cd nautilus
-
-# Set up environment
-cp .env.example .env
-# Edit .env with your configuration
-
-# Run the application
-./run.sh
+```
+volumes:
+    - /home/samuel/jellyfin/data/films:/data/films
 ```
 
-The server will be available at `http://localhost:8080`
+Make sure you have a TMDB API key and add it to the docker compose ```TMDB_API_KEY=Bearer {key-here}```
 
-### Configuration
+```docker compose up --build && bash ./run.sh```
 
-```toml
-# config.toml
-[database]
-host = "localhost"
-port = 5432
-
-[tmdb]
-api_key = "your_tmdb_api_key"
-
-[data]
-data_directory = "/path/to/your/media"
-```
+The library will be available at `http://localhost:8080/library`
 
 ## 🧪 Testing
 
